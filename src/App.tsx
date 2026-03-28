@@ -29,6 +29,10 @@ import { useState, useEffect } from "react";
 
 const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
 
+// ✅ CAMINHOS CORRIGIDOS - repositório Larysson1989/CWBentrulhos
+const LOGO_URL = "https://raw.githubusercontent.com/Larysson1989/CWBentrulhos/main/image/logo.png";
+const HERO_IMG_URL = "https://raw.githubusercontent.com/Larysson1989/CWBentrulhos/main/image/hero.jpg";
+
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -53,8 +57,9 @@ export default function App() {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md shadow-md py-3" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+            {/* ✅ LOGO CORRIGIDA */}
             <img 
-              src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" 
+              src={LOGO_URL}
               alt="CWB Entulhos Logo" 
               className="h-12 md:h-16 w-auto object-contain"
               onError={(e) => {
@@ -120,7 +125,7 @@ export default function App() {
         {/* Background Watermark Logo */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] opacity-[0.03] pointer-events-none -z-0">
           <img 
-            src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" 
+            src={LOGO_URL}
             alt="" 
             className="w-full h-full object-contain grayscale"
           />
@@ -149,21 +154,21 @@ export default function App() {
             </div>
           </motion.div>
 
+          {/* ✅ HERO IMAGE - Foto dos tambores CWB Entulhos */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="relative flex justify-center"
           >
-            <div className="relative z-10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(245,158,11,0.15)] border-4 border-white bg-white p-8 md:p-12 max-w-md w-full">
+            <div className="relative z-10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(245,158,11,0.15)] border-4 border-white max-w-md w-full">
               <img 
-                src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" 
-                alt="Logo Oficial CWB Entulhos" 
-                className="w-full h-auto object-contain"
+                src={HERO_IMG_URL}
+                alt="CWB Entulhos - Remoção de Entulho em Curitiba" 
+                className="w-full h-auto object-cover"
                 onError={(e) => {
-                  e.currentTarget.src = "https://picsum.photos/seed/construction-site/800/600";
+                  e.currentTarget.src = LOGO_URL;
                 }}
-                referrerPolicy="no-referrer"
               />
             </div>
             {/* Decorative elements */}
@@ -240,7 +245,7 @@ export default function App() {
             ].map((item, index) => (
               <div key={index} className="relative group">
                 <div className="absolute -top-4 -left-4 w-12 h-12 opacity-0 group-hover:opacity-10 transition-opacity">
-                  <img src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" alt="" className="w-full h-full object-contain" />
+                  <img src={LOGO_URL} alt="" className="w-full h-full object-contain" />
                 </div>
                 <div className="text-5xl font-display font-black text-brand-yellow/20 mb-4">{item.step}</div>
                 <h3 className="text-xl font-bold mb-2">{item.title}</h3>
@@ -414,8 +419,9 @@ export default function App() {
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-2">
               <div className="flex items-center gap-3 mb-6">
+                {/* ✅ LOGO CORRIGIDA */}
                 <img 
-                  src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" 
+                  src={LOGO_URL}
                   alt="CWB Entulhos Logo" 
                   className="h-12 w-auto object-contain"
                   onError={(e) => {
