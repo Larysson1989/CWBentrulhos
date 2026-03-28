@@ -27,7 +27,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const WHATSAPP_LINK = "https://wa.me/5541999999999?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
+const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -54,11 +54,10 @@ export default function App() {
         <div className="container mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <img 
-              src="/logo.png" 
+              src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" 
               alt="CWB Entulhos Logo" 
-              className="h-10 md:h-12 w-auto object-contain"
+              className="h-12 md:h-16 w-auto object-contain"
               onError={(e) => {
-                // Fallback if logo.png is not found
                 e.currentTarget.style.display = 'none';
                 e.currentTarget.nextElementSibling?.classList.remove('hidden');
               }}
@@ -118,6 +117,14 @@ export default function App() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-[#F9FAFB] overflow-hidden">
+        {/* Background Watermark Logo */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] opacity-[0.03] pointer-events-none -z-0">
+          <img 
+            src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" 
+            alt="" 
+            className="w-full h-full object-contain grayscale"
+          />
+        </div>
         <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -146,27 +153,30 @@ export default function App() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative"
+            className="relative flex justify-center"
           >
-            <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-8 border-white">
+            <div className="relative z-10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(245,158,11,0.15)] border-4 border-white bg-white p-8 md:p-12 max-w-md w-full">
               <img 
-                src="https://picsum.photos/seed/construction-site/800/600" 
-                alt="Obra organizada com latões CWB Entulhos" 
-                className="w-full h-auto object-cover"
+                src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" 
+                alt="Logo Oficial CWB Entulhos" 
+                className="w-full h-auto object-contain"
+                onError={(e) => {
+                  e.currentTarget.src = "https://picsum.photos/seed/construction-site/800/600";
+                }}
                 referrerPolicy="no-referrer"
               />
             </div>
             {/* Decorative elements */}
-            <div className="absolute -top-6 -right-6 w-32 h-32 bg-brand-yellow rounded-full blur-3xl opacity-20 -z-10"></div>
-            <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-brand-dark rounded-full blur-3xl opacity-10 -z-10"></div>
+            <div className="absolute -top-12 -right-12 w-64 h-64 bg-brand-yellow rounded-full blur-[100px] opacity-20 -z-10"></div>
+            <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-brand-dark rounded-full blur-[100px] opacity-10 -z-10"></div>
             
-            <div className="absolute -bottom-6 -right-6 glass-card p-4 rounded-xl shadow-xl z-20 flex items-center gap-3">
-              <div className="bg-green-500 p-2 rounded-full">
-                <CheckCircle2 className="w-5 h-5 text-white" />
+            <div className="absolute -bottom-4 -right-4 glass-card p-5 rounded-2xl shadow-2xl z-20 flex items-center gap-4 border-brand-yellow/20">
+              <div className="bg-brand-yellow p-2.5 rounded-full shadow-lg shadow-brand-yellow/30">
+                <CheckCircle2 className="w-6 h-6 text-brand-dark" />
               </div>
               <div>
-                <p className="text-xs font-bold text-brand-gray uppercase tracking-wider">Descarte</p>
-                <p className="text-sm font-bold">100% Ecológico</p>
+                <p className="text-[10px] font-black text-brand-yellow uppercase tracking-[0.2em]">Qualidade</p>
+                <p className="text-base font-bold text-brand-dark">Serviço Premium</p>
               </div>
             </div>
           </motion.div>
@@ -228,7 +238,10 @@ export default function App() {
               { step: "04", title: "Coleta", desc: "Agendamos a retirada rápida." },
               { step: "05", title: "Descarte", desc: "Fazemos o descarte correto e legal." }
             ].map((item, index) => (
-              <div key={index} className="relative">
+              <div key={index} className="relative group">
+                <div className="absolute -top-4 -left-4 w-12 h-12 opacity-0 group-hover:opacity-10 transition-opacity">
+                  <img src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" alt="" className="w-full h-full object-contain" />
+                </div>
                 <div className="text-5xl font-display font-black text-brand-yellow/20 mb-4">{item.step}</div>
                 <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
@@ -402,7 +415,7 @@ export default function App() {
             <div className="col-span-2">
               <div className="flex items-center gap-3 mb-6">
                 <img 
-                  src="/logo.png" 
+                  src="https://raw.githubusercontent.com/laryssonlara/cwb-entulhos/main/image/logo.png" 
                   alt="CWB Entulhos Logo" 
                   className="h-12 w-auto object-contain"
                   onError={(e) => {
