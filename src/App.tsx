@@ -30,8 +30,8 @@ import { useState, useEffect } from "react";
 const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
 
 // ✅ CAMINHOS CORRIGIDOS - repositório Larysson1989/CWBentrulhos
-const LOGO_URL = "https://raw.githubusercontent.com/Larysson1989/CWBentrulhos/main/image/logo_CWB.png";
-const HERO_IMG_URL = "https://raw.githubusercontent.com/Larysson1989/CWBentrulhos/main/image/hero.jpg";
+const LOGO_URL = "/images/logo_CWB.png";
+const HERO_IMG_URL = "/images/hero.jpg";
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
