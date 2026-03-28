@@ -28,8 +28,6 @@ import {
 import { useState, useEffect } from "react";
 
 const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
-
-// ✅ CAMINHOS CORRIGIDOS - repositório Larysson1989/CWBentrulhos
 const LOGO_URL = "/images/logo_CWB.png";
 const HERO_IMG_URL = "/images/hero.jpg";
 
@@ -53,18 +51,18 @@ export default function App() {
 
   return (
     <div className="min-h-screen relative overflow-x-hidden">
+
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md shadow-md py-3" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-6 flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-            {/* ✅ LOGO CORRIGIDA */}
             <img 
               src={LOGO_URL}
               alt="CWB Entulhos Logo" 
               className="h-12 md:h-16 w-auto object-contain"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                (e.currentTarget.nextElementSibling as HTMLElement)?.classList.remove('hidden');
               }}
             />
             <div className="hidden flex items-center gap-2">
@@ -122,14 +120,10 @@ export default function App() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-[#F9FAFB] overflow-hidden">
-        {/* Background Watermark Logo */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] opacity-[0.03] pointer-events-none -z-0">
-          <img 
-            src={LOGO_URL}
-            alt="" 
-            className="w-full h-full object-contain grayscale"
-          />
+          <img src={LOGO_URL} alt="" className="w-full h-full object-contain grayscale" />
         </div>
+
         <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -154,7 +148,7 @@ export default function App() {
             </div>
           </motion.div>
 
-          {/* ✅ HERO IMAGE - Foto dos tambores CWB Entulhos */}
+          {/* Hero Image */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -171,10 +165,8 @@ export default function App() {
                 }}
               />
             </div>
-            {/* Decorative elements */}
             <div className="absolute -top-12 -right-12 w-64 h-64 bg-brand-yellow rounded-full blur-[100px] opacity-20 -z-10"></div>
             <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-brand-dark rounded-full blur-[100px] opacity-10 -z-10"></div>
-            
             <div className="absolute -bottom-4 -right-4 glass-card p-5 rounded-2xl shadow-2xl z-20 flex items-center gap-4 border-brand-yellow/20">
               <div className="bg-brand-yellow p-2.5 rounded-full shadow-lg shadow-brand-yellow/30">
                 <CheckCircle2 className="w-6 h-6 text-brand-dark" />
@@ -197,7 +189,6 @@ export default function App() {
               Inovamos no mercado de Curitiba para oferecer o que há de mais moderno e eficiente em remoção de resíduos de construção.
             </p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: <Clock />, title: "Entrega Express", desc: "Receba seus latões em até 4 horas após a solicitação. Rapidez imbatível." },
@@ -226,7 +217,6 @@ export default function App() {
       {/* Como Funciona Section */}
       <section id="como-funciona" className="py-24 bg-brand-dark text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-yellow/5 skew-x-12 transform translate-x-1/2"></div>
-        
         <div className="container mx-auto px-6 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-display mb-4">Passo a passo simples</h2>
@@ -234,7 +224,6 @@ export default function App() {
               Processo otimizado para que você não perca tempo com o que não importa.
             </p>
           </div>
-
           <div className="grid md:grid-cols-5 gap-8">
             {[
               { step: "01", title: "Solicite", desc: "Peça pelo WhatsApp em segundos." },
@@ -268,7 +257,6 @@ export default function App() {
             <h2 className="section-title">Soluções para todos os setores</h2>
             <p className="section-subtitle">Atendemos desde pequenas reformas residenciais até grandes demandas industriais.</p>
           </div>
-
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { icon: <Home />, label: "Apartamentos" },
@@ -281,9 +269,7 @@ export default function App() {
               { icon: <PartyPopper />, label: "Eventos" }
             ].map((item, index) => (
               <div key={index} className="flex flex-col items-center justify-center p-8 rounded-2xl bg-[#F9FAFB] border border-gray-100 hover:shadow-lg transition-all">
-                <div className="text-brand-yellow mb-4">
-                  {item.icon}
-                </div>
+                <div className="text-brand-yellow mb-4">{item.icon}</div>
                 <span className="font-bold text-sm text-center">{item.label}</span>
               </div>
             ))}
@@ -298,7 +284,6 @@ export default function App() {
             <h2 className="section-title">Planos e Preços</h2>
             <p className="section-subtitle">Transparência total para o seu planejamento financeiro.</p>
           </div>
-
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {[
               { title: "Plano 3 dias", price: "65", period: "por latão", highlight: false },
@@ -332,7 +317,6 @@ export default function App() {
               </div>
             ))}
           </div>
-          
           <div className="mt-12 max-w-2xl mx-auto glass-card p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="bg-brand-yellow/10 p-2 rounded-lg">
@@ -345,7 +329,6 @@ export default function App() {
             </div>
             <div className="text-2xl font-display font-black text-brand-yellow">R$ 50</div>
           </div>
-          
           <p className="text-center text-sm text-brand-gray mt-8">
             * Atendemos qualquer volume. Valores podem variar conforme necessidade específica.
           </p>
@@ -359,24 +342,24 @@ export default function App() {
             <h2 className="section-title">CWB Entulhos vs Caçamba Tradicional</h2>
             <p className="section-subtitle">Entenda por que o nosso modelo é a escolha inteligente para obras urbanas.</p>
           </div>
-
           <div className="max-w-4xl mx-auto overflow-hidden rounded-3xl border border-gray-100 shadow-xl">
             <div className="grid grid-cols-2 bg-brand-dark text-white p-6 md:p-8">
               <div className="text-center font-display font-bold text-lg md:text-xl text-brand-yellow">CWB Entulhos</div>
               <div className="text-center font-display font-bold text-lg md:text-xl text-gray-400">Caçamba Comum</div>
             </div>
-            
             {[
-              { item: "Praticidade", cwb: true, trad: false, label: "Ideal para ambientes internos" },
-              { item: "Espaço", cwb: true, trad: false, label: "Ocupa espaço na rua/calçada" },
-              { item: "Burocracia", cwb: true, trad: false, label: "Exige autorização da prefeitura" },
-              { item: "Organização", cwb: true, trad: false, label: "Visual agressivo e desorganizado" },
-              { item: "Agilidade", cwb: true, trad: false, label: "Demora na entrega e retirada" }
+              { item: "Praticidade", label: "Ideal para ambientes internos" },
+              { item: "Espaço", label: "Ocupa espaço na rua/calçada" },
+              { item: "Burocracia", label: "Exige autorização da prefeitura" },
+              { item: "Organização", label: "Visual agressivo e desorganizado" },
+              { item: "Agilidade", label: "Demora na entrega e retirada" }
             ].map((row, index) => (
               <div key={index} className={`grid grid-cols-2 p-6 md:p-8 border-b border-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-[#F9FAFB]"}`}>
                 <div className="flex flex-col items-center text-center px-2">
                   <CheckCircle2 className="w-6 h-6 text-green-500 mb-2" />
-                  <span className="text-sm font-bold">{row.item === "Praticidade" ? "Mais prático" : row.item === "Espaço" ? "Compacto" : row.item === "Burocracia" ? "Sem burocracia" : "Mais organizado"}</span>
+                  <span className="text-sm font-bold">
+                    {row.item === "Praticidade" ? "Mais prático" : row.item === "Espaço" ? "Compacto" : row.item === "Burocracia" ? "Sem burocracia" : "Mais organizado"}
+                  </span>
                 </div>
                 <div className="flex flex-col items-center text-center px-2 border-l border-gray-100">
                   <XCircle className="w-6 h-6 text-red-400 mb-2" />
@@ -419,14 +402,13 @@ export default function App() {
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-2">
               <div className="flex items-center gap-3 mb-6">
-                {/* ✅ LOGO CORRIGIDA */}
                 <img 
                   src={LOGO_URL}
                   alt="CWB Entulhos Logo" 
                   className="h-12 w-auto object-contain"
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
-                    e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    (e.currentTarget.nextElementSibling as HTMLElement)?.classList.remove('hidden');
                   }}
                 />
                 <div className="hidden flex items-center gap-2">
@@ -440,7 +422,6 @@ export default function App() {
                 Solução moderna e eficiente em remoção de entulho para Curitiba e região metropolitana. Transformamos a logística da sua obra.
               </p>
             </div>
-            
             <div>
               <h4 className="font-bold mb-6 uppercase text-xs tracking-widest text-brand-yellow">Horário de Funcionamento</h4>
               <ul className="text-sm text-brand-gray space-y-3">
@@ -451,7 +432,6 @@ export default function App() {
                 </li>
               </ul>
             </div>
-
             <div>
               <h4 className="font-bold mb-6 uppercase text-xs tracking-widest text-brand-yellow">Localização</h4>
               <ul className="text-sm text-brand-gray space-y-3">
@@ -460,7 +440,6 @@ export default function App() {
               </ul>
             </div>
           </div>
-          
           <div className="pt-10 border-t border-gray-50 flex flex-col md:flex-row items-center justify-between gap-6">
             <p className="text-sm text-gray-400">
               © {new Date().getFullYear()} CWB Entulhos. Todos os direitos reservados.
