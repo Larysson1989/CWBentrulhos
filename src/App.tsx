@@ -28,19 +28,17 @@ import {
 import { useState, useEffect } from "react";
 
 const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
-const HERO_IMG_URL = "/images/hero.jpg";
+const HERO_IMG_URL = "/images/pagina1.jpg";
+const LOGO_IMG_URL = "/images/Logo_CWB_entulho.png";
 
-// Componente de logo tipográfico — sem imagem
+// Componente de logo com imagem real
 const Logo = ({ size = "default" }: { size?: "default" | "large" }) => (
-  <span
-    className={`font-display font-black tracking-tight leading-none cursor-pointer ${
-      size === "large" ? "text-2xl" : "text-xl"
-    }`}
+  <img
+    src={LOGO_IMG_URL}
+    alt="CWB Entulhos"
+    className={`w-auto object-contain cursor-pointer ${size === "large" ? "h-14" : "h-10 md:h-12"}`}
     onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-  >
-    <span className="text-brand-dark">CWB </span>
-    <span className="text-brand-yellow">Entulhos</span>
-  </span>
+  />
 );
 
 export default function App() {
@@ -150,11 +148,10 @@ export default function App() {
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(245,158,11,0.15)] border-4 border-white max-w-md w-full">
               <img 
                 src={HERO_IMG_URL}
-                alt="CWB Entulhos - Remoção de Entulho em Curitiba" 
-                className="w-full h-auto object-cover min-h-[300px] bg-[#F3F0EC]"
-                onError={(e) => {
-                  e.currentTarget.style.display = 'none';
-                }}
+                alt="CWB Entulhos - Remoção de Entulho em Curitiba"
+                className="w-full h-auto object-cover"
+                loading="eager"
+                decoding="async"
               />
             </div>
             <div className="absolute -top-12 -right-12 w-64 h-64 bg-brand-yellow rounded-full blur-[100px] opacity-20 -z-10"></div>
