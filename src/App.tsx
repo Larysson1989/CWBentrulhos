@@ -29,16 +29,13 @@ import { useState, useEffect } from "react";
 
 const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
 const HERO_IMG_URL = "/images/pagina1.jpg";
-const LOGO_IMG_URL = "/images/Logo_CWB_entulho.png";
 
-// Componente de logo com imagem real
-const Logo = ({ size = "default" }: { size?: "default" | "large" }) => (
-  // ✅ DEPOIS — tamanho adequado para navbar
-<img
-  src="/images/Logo_CWB_entulho.png"
-  alt="CWB Entulhos"
-  className="h-14 md:h-16 min-w-[120px] w-auto object-contain"
-/>
+const Logo = () => (
+  <img
+    src="/images/Logo_CWB_entulho.png"
+    alt="CWB Entulhos"
+    className="h-14 md:h-16 min-w-[120px] w-auto object-contain"
+  />
 );
 
 export default function App() {
@@ -156,10 +153,8 @@ export default function App() {
             </div>
             <div className="absolute -top-12 -right-12 w-64 h-64 bg-brand-yellow rounded-full blur-[100px] opacity-20 -z-10"></div>
             <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-brand-dark rounded-full blur-[100px] opacity-10 -z-10"></div>
-            <div className="absolute -bottom-4 -right-4 glass-card p-5 rounded-2xl shadow-2xl z-20 flex items-center gap-4 border-brand-yellow/20">
-              <div className="bg-brand-yellow p-2.5 rounded-full shadow-lg shadow-brand-yellow/30">
-                <CheckCircle2 className="w-6 h-6 text-brand-dark" />
-              </div>
+          </motion.div>
+        </div>
       </section>
 
       {/* Diferenciais Section */}
@@ -381,7 +376,7 @@ export default function App() {
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-2">
               <div className="mb-6">
-                <Logo size="large" />
+                <Logo />
               </div>
               <p className="text-brand-gray max-w-sm leading-relaxed">
                 Solução moderna e eficiente em remoção de entulho para Curitiba e região metropolitana. Transformamos a logística da sua obra.
