@@ -33,12 +33,12 @@ const LOGO_IMG_URL = "/images/Logo_CWB_entulho.png";
 
 // Componente de logo com imagem real
 const Logo = ({ size = "default" }: { size?: "default" | "large" }) => (
-  <img
-    src={LOGO_IMG_URL}
-    alt="CWB Entulhos"
-    className={`w-auto object-contain cursor-pointer ${size === "large" ? "h-14" : "h-10 md:h-12"}`}
-    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-  />
+  // ✅ DEPOIS — tamanho adequado para navbar
+<img
+  src="/images/Logo_CWB_entulho.png"
+  alt="CWB Entulhos"
+  className="h-14 md:h-16 w-auto object-contain"
+/>
 );
 
 export default function App() {
