@@ -156,12 +156,12 @@ export default function App() {
             className="relative flex justify-center"
           >
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(245,158,11,0.15)] border-4 border-white max-w-md w-full">
-              <img 
+             <img 
                 src={HERO_IMG_URL}
                 alt="CWB Entulhos - Remoção de Entulho em Curitiba" 
-                className="w-full h-auto object-cover"
+                className="w-full h-auto object-cover min-h-[300px] bg-[#F3F0EC]"
                 onError={(e) => {
-                  e.currentTarget.src = LOGO_URL;
+                  e.currentTarget.style.display = 'none';
                 }}
               />
             </div>
