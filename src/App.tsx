@@ -28,8 +28,20 @@ import {
 import { useState, useEffect } from "react";
 
 const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
-const LOGO_URL = "/images/logo_CWB.png";
 const HERO_IMG_URL = "/images/hero.jpg";
+
+// Componente de logo tipográfico — sem imagem
+const Logo = ({ size = "default" }: { size?: "default" | "large" }) => (
+  <span
+    className={`font-display font-black tracking-tight leading-none cursor-pointer ${
+      size === "large" ? "text-2xl" : "text-xl"
+    }`}
+    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+  >
+    <span className="text-brand-dark">CWB </span>
+    <span className="text-brand-yellow">Entulhos</span>
+  </span>
+);
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -55,23 +67,7 @@ export default function App() {
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md shadow-md py-3" : "bg-transparent py-6"}`}>
         <div className="container mx-auto px-6 flex items-center justify-between">
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-            <img 
-              src={LOGO_URL}
-              alt="CWB Entulhos Logo" 
-              className="h-12 md:h-16 w-auto object-contain"
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                (e.currentTarget.nextElementSibling as HTMLElement)?.classList.remove('hidden');
-              }}
-            />
-            <div className="hidden flex items-center gap-2">
-              <div className="bg-brand-yellow p-1.5 rounded-lg">
-                <Trash2 className="w-6 h-6 text-brand-dark" />
-              </div>
-              <span className="text-xl font-display font-bold tracking-tight">CWB <span className="text-brand-yellow">ENTULHOS</span></span>
-            </div>
-          </div>
+          <Logo />
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
@@ -120,10 +116,6 @@ export default function App() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 bg-[#F9FAFB] overflow-hidden">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] opacity-[0.03] pointer-events-none -z-0">
-          <img src={LOGO_URL} alt="" className="w-full h-full object-contain grayscale" />
-        </div>
-
         <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-10">
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -156,7 +148,7 @@ export default function App() {
             className="relative flex justify-center"
           >
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(245,158,11,0.15)] border-4 border-white max-w-md w-full">
-             <img 
+              <img 
                 src={HERO_IMG_URL}
                 alt="CWB Entulhos - Remoção de Entulho em Curitiba" 
                 className="w-full h-auto object-cover min-h-[300px] bg-[#F3F0EC]"
@@ -233,9 +225,6 @@ export default function App() {
               { step: "05", title: "Descarte", desc: "Fazemos o descarte correto e legal." }
             ].map((item, index) => (
               <div key={index} className="relative group">
-                <div className="absolute -top-4 -left-4 w-12 h-12 opacity-0 group-hover:opacity-10 transition-opacity">
-                  <img src={LOGO_URL} alt="" className="w-full h-full object-contain" />
-                </div>
                 <div className="text-5xl font-display font-black text-brand-yellow/20 mb-4">{item.step}</div>
                 <h3 className="text-xl font-bold mb-2">{item.title}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
@@ -401,22 +390,8 @@ export default function App() {
         <div className="container mx-auto px-6">
           <div className="grid md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-2">
-              <div className="flex items-center gap-3 mb-6">
-                <img 
-                  src={LOGO_URL}
-                  alt="CWB Entulhos Logo" 
-                  className="h-12 w-auto object-contain"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    (e.currentTarget.nextElementSibling as HTMLElement)?.classList.remove('hidden');
-                  }}
-                />
-                <div className="hidden flex items-center gap-2">
-                  <div className="bg-brand-yellow p-1.5 rounded-lg">
-                    <Trash2 className="w-6 h-6 text-brand-dark" />
-                  </div>
-                  <span className="text-2xl font-display font-bold tracking-tight">CWB <span className="text-brand-yellow">ENTULHOS</span></span>
-                </div>
+              <div className="mb-6">
+                <Logo size="large" />
               </div>
               <p className="text-brand-gray max-w-sm leading-relaxed">
                 Solução moderna e eficiente em remoção de entulho para Curitiba e região metropolitana. Transformamos a logística da sua obra.
