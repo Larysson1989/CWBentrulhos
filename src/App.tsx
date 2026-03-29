@@ -122,7 +122,7 @@ export default function App() {
           >
             <div className="inline-flex items-center gap-2 bg-brand-yellow/10 text-brand-yellow px-4 py-1.5 rounded-full text-sm font-bold mb-6">
               <Clock className="w-4 h-4" />
-              Entrega Express em até 4 horas
+              Entrega Express em até 12 horas
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.1] mb-6">
               A forma mais <span className="text-brand-yellow underline decoration-brand-yellow/30 underline-offset-8">prática</span>, rápida e inteligente de remover entulho.
@@ -160,13 +160,6 @@ export default function App() {
               <div className="bg-brand-yellow p-2.5 rounded-full shadow-lg shadow-brand-yellow/30">
                 <CheckCircle2 className="w-6 h-6 text-brand-dark" />
               </div>
-              <div>
-                <p className="text-[10px] font-black text-brand-yellow uppercase tracking-[0.2em]">Qualidade</p>
-                <p className="text-base font-bold text-brand-dark">Serviço Premium</p>
-              </div>
-            </div>
-          </motion.div>
-        </div>
       </section>
 
       {/* Diferenciais Section */}
