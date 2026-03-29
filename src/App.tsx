@@ -37,7 +37,7 @@ const Logo = ({ size = "default" }: { size?: "default" | "large" }) => (
 <img
   src="/images/Logo_CWB_entulho.png"
   alt="CWB Entulhos"
-  className="h-14 md:h-16 w-auto object-contain"
+  className="h-14 md:h-16 min-w-[120px] w-auto object-contain"
 />
 );
 
