@@ -2,7 +2,6 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-
 import { motion } from "motion/react";
 import {
   Truck,
@@ -48,13 +47,11 @@ const Logo = () => (
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
   return (
     <div className="min-h-screen bg-white font-sans text-brand-dark selection:bg-brand-yellow/30">
       {/* Navbar */}
@@ -67,7 +64,6 @@ export default function App() {
           <div className="flex items-center gap-4">
             <Logo />
           </div>
-
           <div className="hidden lg:flex items-center gap-8">
             {["Serviços", "Simulador", "Como Funciona", "FAQ"].map((item) => (
               <a
@@ -87,13 +83,11 @@ export default function App() {
               Orçamento Rápido
             </a>
           </div>
-
           <button className="lg:hidden text-brand-dark" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
           </button>
         </div>
       </nav>
-
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden bg-brand-dark">
         <div className="absolute inset-0 z-0">
@@ -104,7 +98,6 @@ export default function App() {
           />
           <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/80 to-transparent"></div>
         </div>
-
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-3xl">
             <motion.div
@@ -144,7 +137,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
       {/* Simulador Section */}
       <section id="simulador" className="py-24 bg-gray-50 border-y border-gray-100">
         <div className="container mx-auto px-6">
@@ -154,13 +146,11 @@ export default function App() {
               Selecione a quantidade e o tempo de uso para ver o valor estimado na hora.
             </p>
           </div>
-
           <div className="max-w-5xl mx-auto">
             <PricingSimulator />
           </div>
         </div>
       </section>
-
       {/* Como Funciona Section */}
       <section id="como-funciona" className="py-24 bg-brand-dark text-white relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-yellow/5 skew-x-12 transform translate-x-1/2"></div>
@@ -188,7 +178,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
       {/* FAQ Section */}
       <section id="faq" className="py-24 bg-white">
         <div className="container mx-auto px-6 max-w-4xl">
@@ -209,7 +198,6 @@ export default function App() {
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="bg-brand-dark text-white pt-24 pb-12">
         <div className="container mx-auto px-6 text-center border-t border-white/10 pt-12">
@@ -219,7 +207,6 @@ export default function App() {
           </p>
         </div>
       </footer>
-
       {/* WhatsApp Float */}
       <motion.a
         href={WHATSAPP_LINK}
@@ -243,31 +230,25 @@ function PricingSimulator() {
   const [qtd, setQtd] = useState(1);
   const [dias, setDias] = useState(1);
   const [express, setExpress] = useState(false);
-
   const calculateTotal = () => {
     let basePrice = 0;
     const isExpress = express;
-
     if (qtd === 1) basePrice = isExpress ? 185 : 150;
     else if (qtd === 2) basePrice = isExpress ? 295 : 240;
     else if (qtd === 3) basePrice = isExpress ? 390 : 315;
     else if (qtd === 4) basePrice = isExpress ? 470 : 380;
     else basePrice = qtd * (isExpress ? 75 : 60);
-
     const extraDays = Math.max(0, dias - 3);
     const extraCost = extraDays * 20 * qtd;
-
     return basePrice + extraCost;
   };
-
   const total = calculateTotal();
   const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
   return (
     <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden grid lg:grid-cols-2">
       <div className="p-8 md:p-12 space-y-10">
         <div>
-          abel className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
             <Trash2 className="w-4 h-4 text-brand-yellow" />
             Quantidade de Tambores
           </label>
@@ -289,9 +270,8 @@ function PricingSimulator() {
             </button>
           </div>
         </div>
-
         <div>
-          abel className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
             <Calendar className="w-4 h-4 text-brand-yellow" />
             Tempo de Permanência
           </label>
@@ -316,9 +296,8 @@ function PricingSimulator() {
             </button>
           </div>
         </div>
-
         <div>
-          abel className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
             <Zap className="w-4 h-4 text-brand-yellow" />
             Tipo de Serviço
           </label>
@@ -344,33 +323,31 @@ function PricingSimulator() {
           </div>
         </div>
       </div>
-
       <div className="bg-brand-dark p-8 md:p-12 text-white flex flex-col justify-between relative overflow-hidden">
         <div className="relative z-10">
           <h3 className="text-sm font-black uppercase tracking-widest text-brand-yellow mb-8">Resumo do Pedido</h3>
           <ul className="space-y-4 mb-10">
-            >
+            <li>
               <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Serviço</span>
               <span className="font-bold">{express ? "Express (8h)" : "Convencional (24h)"}</span>
             </li>
-            >
+            <li>
               <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Quantidade</span>
               <span className="font-bold">{qtd} {qtd === 1 ? "Tambor" : "Tambores"}</span>
             </li>
-            >
+            <li>
               <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Período</span>
               <span className="font-bold">{dias} {dias === 1 ? "Dia" : "Dias"}</span>
             </li>
           </ul>
         </div>
-
         <div className="relative z-10 pt-8 border-t border-white/10">
           <div className="flex items-baseline justify-between mb-8">
             <span className="text-gray-400 font-black uppercase tracking-widest text-xs">Total Estimado</span>
             <span className="text-5xl md:text-6xl font-display font-black text-brand-yellow">{fmt(total)}</span>
           </div>
           <a
-            href={`${WHATSAPP_LINK}%20*Pedido%20Simulado*%3A%0A•%20${qtd}%20tambor${qtd > 1 ? "es" : ""}%20por%20${dias}%20dia${dias > 1 ? "s" : ""}%0A•%20Serviço%3A%20${express ? "Express (8h)" : "Convencional (24h)"}%0A•%20Total%20estimado%3A%20${fmt(total)}%0A%0APode%20confirmar%20disponibilidade?`}
+            href={`${WHATSAPP_LINK}%20*Pedido%20Simulado*%3A%0A%E2%80%A2%20${qtd}%20tambor${qtd > 1 ? "es" : ""}%20por%20${dias}%20dia${dias > 1 ? "s" : ""}%0A%E2%80%A2%20Servi%C3%A7o%3A%20${express ? "Express (8h)" : "Convencional (24h)"}%0A%E2%80%A2%20Total%20estimado%3A%20${fmt(total)}%0A%0APode%20confirmar%20disponibilidade?`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-brand-yellow text-brand-dark py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-2xl shadow-brand-yellow/20 group"
