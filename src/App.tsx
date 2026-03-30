@@ -228,134 +228,187 @@ export default function App() {
 
 function PricingSimulator() {
   const [qtd, setQtd] = useState(1);
-  const [dias, setDias] = useState(1);
+  const [dias, setDias] = useState(3);
   const [express, setExpress] = useState(false);
+  const [showResult, setShowResult] = useState(false);
+  const [qtyError, setQtyError] = useState("");
+  const [daysError, setDaysError] = useState("");
+
+  const BASE_PRICE: Record<number, number> = { 1: 100, 2: 180, 3: 240, 4: 280 };
+  const basePriceFor = (q: number) => q >= 5 ? q * 65 : BASE_PRICE[q];
+  const dailyRateFor = (q: number) => q === 1 ? 30 : q <= 3 ? 25 : 20;
+
   const calculateTotal = () => {
-    let basePrice = 0;
-    const isExpress = express;
-    if (qtd === 1) basePrice = isExpress ? 185 : 150;
-    else if (qtd === 2) basePrice = isExpress ? 295 : 240;
-    else if (qtd === 3) basePrice = isExpress ? 390 : 315;
-    else if (qtd === 4) basePrice = isExpress ? 470 : 380;
-    else basePrice = qtd * (isExpress ? 75 : 60);
+    const base = basePriceFor(qtd);
     const extraDays = Math.max(0, dias - 3);
-    const extraCost = extraDays * 20 * qtd;
-    return basePrice + extraCost;
+    return base + extraDays * dailyRateFor(qtd) * qtd;
   };
+
+  const validate = () => {
+    let ok = true;
+    setQtyError(""); setDaysError("");
+    if (qtd < 1 || qtd > 10) { setQtyError(qtd < 1 ? "Mínimo 1 tambor." : "Máximo 10 tambores."); ok = false; }
+    if (dias < 3) { setDaysError("O período mínimo é de 3 dias."); ok = false; }
+    return ok;
+  };
+
   const total = calculateTotal();
+  const extraDays = Math.max(0, dias - 3);
   const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+  const wppMsg = dias > 7
+    ? `Olá! Preciso de um orçamento para locação de ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dias (${express ? "Express" : "Convencional"}).`
+    : `Olá! Quero confirmar a locação de ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dia${dias > 1 ? "s" : ""} — ${express ? "Express (8h)" : "Convencional (24h)"}. Total estimado: ${fmt(total)}.`;
+
   return (
-    <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden grid lg:grid-cols-2">
-      <div className="p-8 md:p-12 space-y-10">
+    <div className="grid md:grid-cols-2 gap-0 bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 max-w-3xl mx-auto">
+
+      {/* LEFT: INPUTS */}
+      <div className="p-8 flex flex-col gap-6 border-r border-gray-100">
         <div>
-          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
-            <Trash2 className="w-4 h-4 text-brand-yellow" />
-            Quantidade de Tambores
-          </label>
-          <div className="flex items-center gap-4">
+          <h3 className="font-display text-xl font-bold text-brand-dark">Simulador de Locação</h3>
+          <p className="text-sm text-gray-500 mt-1">Calcule o valor estimado na hora</p>
+        </div>
+
+        {/* QTD */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-semibold uppercase tracking-widest text-gray-400">Quantidade de tambores</label>
+          <div className={`flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border-2 transition-colors ${qtyError ? "border-red-400" : "border-transparent focus-within:border-brand-yellow"}`}>
             <button
               onClick={() => setQtd(Math.max(1, qtd - 1))}
-              className="w-14 h-14 rounded-2xl border-2 border-gray-100 flex items-center justify-center text-2xl font-black hover:bg-gray-50 transition-colors"
-            >
-              -
-            </button>
-            <div className="flex-1 bg-gray-50 rounded-2xl h-14 flex items-center justify-center text-2xl font-black">
-              {qtd} {qtd === 1 ? "Tambor" : "Tambores"}
+              disabled={qtd <= 1}
+              aria-label="Diminuir quantidade"
+              className="w-10 h-10 rounded-xl border-2 border-gray-200 bg-white flex items-center justify-center text-xl font-black hover:border-brand-yellow hover:bg-brand-yellow hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            >−</button>
+            <div className="flex-1 text-center">
+              <span className="text-xl font-black text-brand-dark">{qtd}</span>
+              <span className="text-sm text-gray-400 ml-2">tambor{qtd > 1 ? "es" : ""}</span>
             </div>
             <button
-              onClick={() => setQtd(qtd + 1)}
-              className="w-14 h-14 rounded-2xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-2xl font-black hover:bg-brand-yellow/80 transition-colors"
-            >
-              +
-            </button>
+              onClick={() => setQtd(Math.min(10, qtd + 1))}
+              disabled={qtd >= 10}
+              aria-label="Aumentar quantidade"
+              className="w-10 h-10 rounded-xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-xl font-black hover:bg-yellow-500 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            >+</button>
           </div>
+          <p className="text-xs text-gray-400">Mínimo 1 · Máximo 10 tambores</p>
+          {qtyError && <p className="text-xs text-red-500 font-medium">{qtyError}</p>}
         </div>
-        <div>
-          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
-            <Calendar className="w-4 h-4 text-brand-yellow" />
-            Tempo de Permanência
-          </label>
-          <div className="flex items-center gap-4">
+
+        {/* DIAS */}
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-semibold uppercase tracking-widest text-gray-400">Período de permanência</label>
+          <div className={`flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border-2 transition-colors ${daysError ? "border-red-400" : "border-transparent focus-within:border-brand-yellow"}`}>
             <button
-              onClick={() => setDias(Math.max(1, dias - 1))}
-              className="w-14 h-14 rounded-2xl border-2 border-gray-100 flex items-center justify-center text-2xl font-black hover:bg-gray-50 transition-colors"
-            >
-              -
-            </button>
-            <div className="flex-1 bg-gray-50 rounded-2xl h-14 flex items-center justify-center text-2xl font-black text-center">
-              {dias} {dias === 1 ? "Dia" : "Dias"}
-              <span className="block text-[10px] text-gray-400 font-bold uppercase mt-1 leading-none">
-                {dias > 3 ? `(+${dias - 3} extras)` : "(Até 3 dias inclusos)"}
-              </span>
+              onClick={() => setDias(Math.max(3, dias - 1))}
+              disabled={dias <= 3}
+              aria-label="Diminuir dias"
+              className="w-10 h-10 rounded-xl border-2 border-gray-200 bg-white flex items-center justify-center text-xl font-black hover:border-brand-yellow hover:bg-brand-yellow hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            >−</button>
+            <div className="flex-1 text-center">
+              <span className="text-xl font-black text-brand-dark">{dias}</span>
+              <span className="text-sm text-gray-400 ml-2">dia{dias > 1 ? "s" : ""}</span>
+              {dias > 3 && <span className="text-xs text-brand-yellow ml-1 font-semibold">(+{dias - 3} extra{dias - 3 > 1 ? "s" : ""})</span>}
             </div>
             <button
-              onClick={() => setDias(dias + 1)}
-              className="w-14 h-14 rounded-2xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-2xl font-black hover:bg-brand-yellow/80 transition-colors"
-            >
-              +
-            </button>
+              onClick={() => setDias(Math.min(7, dias + 1))}
+              disabled={dias >= 7}
+              aria-label="Aumentar dias"
+              className="w-10 h-10 rounded-xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-xl font-black hover:bg-yellow-500 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+            >+</button>
+          </div>
+          <p className="text-xs text-gray-400">Mínimo 3 dias inclusos · Máximo 7 dias</p>
+          {daysError && <p className="text-xs text-red-500 font-medium">{daysError}</p>}
+        </div>
+
+        {/* SERVICE TYPE */}
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">Tipo de serviço</span>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { val: false, title: "Convencional", sub: "Entrega em até 24h" },
+              { val: true,  title: "Express",      sub: "Entrega em até 8h", badge: "Rápido" },
+            ].map(opt => (
+              <button
+                key={opt.title}
+                onClick={() => setExpress(opt.val)}
+                role="radio"
+                aria-checked={express === opt.val}
+                className={`p-4 rounded-2xl border-2 text-left transition-all ${express === opt.val ? "border-brand-yellow bg-amber-50" : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"}`}
+              >
+                <span className="block font-bold text-sm text-brand-dark">{opt.title}</span>
+                <span className="block text-xs text-gray-500 mt-0.5">{opt.sub}</span>
+                {opt.badge && <span className="inline-block mt-1 text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">{opt.badge}</span>}
+              </button>
+            ))}
           </div>
         </div>
-        <div>
-          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
-            <Zap className="w-4 h-4 text-brand-yellow" />
-            Tipo de Serviço
-          </label>
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              onClick={() => setExpress(false)}
-              className={`p-4 rounded-2xl border-2 transition-all text-left ${
-                !express ? "border-brand-yellow bg-brand-yellow/5" : "border-gray-100 hover:bg-gray-50"
-              }`}
-            >
-              <span className="block font-black text-lg">Convencional</span>
-              <span className="text-xs text-gray-500">Entrega em até 24h</span>
-            </button>
-            <button
-              onClick={() => setExpress(true)}
-              className={`p-4 rounded-2xl border-2 transition-all text-left ${
-                express ? "border-brand-yellow bg-brand-yellow/5" : "border-gray-100 hover:bg-gray-50"
-              }`}
-            >
-              <span className="block font-black text-lg">Express</span>
-              <span className="text-xs text-gray-500">Entrega em até 8h</span>
-            </button>
-          </div>
-        </div>
+
+        {/* CALC BTN */}
+        <button
+          onClick={() => { if (validate()) setShowResult(true); }}
+          className="w-full bg-brand-dark text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-800 active:scale-[0.98] transition-all shadow-lg"
+        >
+          <Calculator size={16} />
+          Calcular valor
+        </button>
       </div>
-      <div className="bg-brand-dark p-8 md:p-12 text-white flex flex-col justify-between relative overflow-hidden">
-        <div className="relative z-10">
-          <h3 className="text-sm font-black uppercase tracking-widest text-brand-yellow mb-8">Resumo do Pedido</h3>
-          <ul className="space-y-4 mb-10">
-            <li>
-              <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Serviço</span>
-              <span className="font-bold">{express ? "Express (8h)" : "Convencional (24h)"}</span>
-            </li>
-            <li>
-              <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Quantidade</span>
-              <span className="font-bold">{qtd} {qtd === 1 ? "Tambor" : "Tambores"}</span>
-            </li>
-            <li>
-              <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Período</span>
-              <span className="font-bold">{dias} {dias === 1 ? "Dia" : "Dias"}</span>
-            </li>
-          </ul>
+
+      {/* RIGHT: SUMMARY */}
+      <div className="bg-brand-dark p-8 flex flex-col gap-6 text-white">
+        <div>
+          <span className="text-xs font-bold uppercase tracking-widest text-brand-yellow">Resumo do pedido</span>
+          <h3 className="font-display text-lg font-bold mt-1 text-white">
+            {showResult && dias > 7 ? "Consulta necessária" : showResult ? "Valor estimado" : "Configure seu pedido"}
+          </h3>
         </div>
-        <div className="relative z-10 pt-8 border-t border-white/10">
-          <div className="flex items-baseline justify-between mb-8">
-            <span className="text-gray-400 font-black uppercase tracking-widest text-xs">Total Estimado</span>
-            <span className="text-5xl md:text-6xl font-display font-black text-brand-yellow">{fmt(total)}</span>
+
+        <div className="h-px bg-white/10" />
+
+        <div className="flex flex-col gap-3">
+          {[
+            { label: "Serviço",    val: express ? "Express (até 8h)" : "Convencional (24h)" },
+            { label: "Quantidade", val: `${qtd} tambor${qtd > 1 ? "es" : ""}` },
+            { label: "Período",    val: `${dias} dia${dias > 1 ? "s" : ""}` },
+            ...(showResult && extraDays > 0 ? [{ label: "Diárias extras", val: `${extraDays} × ${fmt(dailyRateFor(qtd))}/tambor` }] : []),
+          ].map(row => (
+            <div key={row.label} className="flex justify-between items-baseline gap-2">
+              <span className="text-[11px] font-semibold uppercase tracking-wider text-white/50">{row.label}</span>
+              <span className="text-sm font-semibold text-white/90">{row.val}</span>
+            </div>
+          ))}
+        </div>
+
+        <div className="h-px bg-white/10" />
+
+        {!showResult ? (
+          <p className="text-white/30 italic text-sm">Clique em calcular para ver o valor</p>
+        ) : dias > 7 ? (
+          <div className="bg-brand-yellow/10 border border-brand-yellow/25 rounded-2xl p-4 flex flex-col gap-2">
+            <span className="text-sm font-bold text-brand-yellow">⚡ Período especial</span>
+            <span className="text-xs text-white/65 leading-relaxed">Para períodos acima de 7 dias, entre em contato com nossa equipe para um orçamento personalizado.</span>
           </div>
-          <a
-            href={`${WHATSAPP_LINK}%20*Pedido%20Simulado*%3A%0A%E2%80%A2%20${qtd}%20tambor${qtd > 1 ? "es" : ""}%20por%20${dias}%20dia${dias > 1 ? "s" : ""}%0A%E2%80%A2%20Servi%C3%A7o%3A%20${express ? "Express (8h)" : "Convencional (24h)"}%0A%E2%80%A2%20Total%20estimado%3A%20${fmt(total)}%0A%0APode%20confirmar%20disponibilidade?`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full bg-brand-yellow text-brand-dark py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-2xl shadow-brand-yellow/20 group"
-          >
-            Confirmar no WhatsApp
-            <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
-          </a>
-        </div>
+        ) : (
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-white/50">Total estimado</span>
+            <span className="font-display text-4xl font-black text-brand-yellow leading-none">{fmt(total)}</span>
+            <span className="text-xs text-white/40 mt-1">
+              {extraDays > 0
+                ? `Base ${fmt(basePriceFor(qtd))} + ${extraDays} diária${extraDays > 1 ? "s" : ""} extra${extraDays > 1 ? "s" : ""} (${fmt(extraDays * dailyRateFor(qtd) * qtd)})`
+                : "Período base de 3 dias inclusos"}
+            </span>
+          </div>
+        )}
+
+        <a
+          href={`https://wa.me/5541997015424?text=${encodeURIComponent(wppMsg)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-auto w-full bg-brand-yellow text-brand-dark py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-yellow-400 active:scale-[0.98] transition-all shadow-lg shadow-brand-yellow/20"
+        >
+          <MessageCircle size={16} />
+          Confirmar no WhatsApp →
+        </a>
       </div>
     </div>
   );
