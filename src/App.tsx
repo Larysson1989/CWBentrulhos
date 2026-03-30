@@ -161,10 +161,60 @@ export default function App() {
         </div>
       </section>
 
+      {/* Como Funciona Section */}
+      <section id="como-funciona" className="py-24 bg-brand-dark text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-brand-yellow/5 skew-x-12 transform translate-x-1/2"></div>
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-display mb-4">Passo a passo simples</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto">
+              Processo otimizado para que você não perca tempo com o que não importa.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-5 gap-8">
+            {[
+              { step: "01", title: "Solicite", desc: "Peça pelo WhatsApp em segundos." },
+              { step: "02", title: "Receba", desc: "Tambores entregues no seu local." },
+              { step: "03", title: "Utilize", desc: "Encha os tambores com seu entulho." },
+              { step: "04", title: "Coleta", desc: "Agendamos a retirada rápida." },
+              { step: "05", title: "Descarte", desc: "Fazemos o descarte legalizado." },
+            ].map((item, index) => (
+              <div key={index} className="relative group">
+                <div className="text-5xl font-display font-black text-brand-yellow/20 mb-4 group-hover:text-brand-yellow transition-colors">{item.step}</div>
+                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                <p className="text-gray-400 text-sm">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section id="faq" className="py-24 bg-white">
+        <div className="container mx-auto px-6 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-display mb-4">Perguntas Frequentes</h2>
+          </div>
+          <div className="space-y-4">
+            {[
+              { q: "Qual o tamanho do tambor?", a: "Nossos tambores têm capacidade de 200 litros, ideais para espaços reduzidos." },
+              { q: "Quais bairros vocês atendem?", a: "Atendemos toda Curitiba e região metropolitana." },
+              { q: "Como funciona a diária extra?", a: "Os planos incluem até 3 dias. A partir do 4º dia, cobramos R$ 20,00 por tambor/dia." },
+            ].map((item, index) => (
+              <div key={index} className="border border-gray-100 rounded-2xl p-6">
+                <h3 className="font-bold text-lg mb-2">{item.q}</h3>
+                <p className="text-gray-600">{item.a}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-brand-dark text-white pt-24 pb-12">
         <div className="container mx-auto px-6 text-center border-t border-white/10 pt-12">
-          <p className="text-gray-500 text-sm">
+          <Logo />
+          <p className="text-gray-500 text-sm mt-8">
             © {new Date().getFullYear()} CWB Entulhos. Todos os direitos reservados.
           </p>
         </div>
@@ -217,7 +267,7 @@ function PricingSimulator() {
     <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden grid lg:grid-cols-2">
       <div className="p-8 md:p-12 space-y-10">
         <div>
-          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+          abel className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
             <Trash2 className="w-4 h-4 text-brand-yellow" />
             Quantidade de Tambores
           </label>
@@ -241,7 +291,7 @@ function PricingSimulator() {
         </div>
 
         <div>
-          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+          abel className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
             <Calendar className="w-4 h-4 text-brand-yellow" />
             Tempo de Permanência
           </label>
@@ -268,7 +318,7 @@ function PricingSimulator() {
         </div>
 
         <div>
-          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+          abel className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
             <Zap className="w-4 h-4 text-brand-yellow" />
             Tipo de Serviço
           </label>
@@ -299,15 +349,15 @@ function PricingSimulator() {
         <div className="relative z-10">
           <h3 className="text-sm font-black uppercase tracking-widest text-brand-yellow mb-8">Resumo do Pedido</h3>
           <ul className="space-y-4 mb-10">
-            <li className="flex justify-between items-center text-lg">
+            >
               <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Serviço</span>
               <span className="font-bold">{express ? "Express (8h)" : "Convencional (24h)"}</span>
             </li>
-            <li className="flex justify-between items-center text-lg">
+            >
               <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Quantidade</span>
               <span className="font-bold">{qtd} {qtd === 1 ? "Tambor" : "Tambores"}</span>
             </li>
-            <li className="flex justify-between items-center text-lg">
+            >
               <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Período</span>
               <span className="font-bold">{dias} {dias === 1 ? "Dia" : "Dias"}</span>
             </li>
