@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
+const WHATSAPP_BASE = "5541997015424";
 const WHATSAPP_LINK =
   "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho%20em%20Curitiba.";
 const PHONE_LINK = "tel:+5541997015424";
@@ -47,7 +48,7 @@ const Logo = () => (
   />
 );
 
-// ─── Lógica de Precificação ───────────────────────────────────────────────────
+// ─── Lógica de Precificação ───────────────────────────────────────────────
 
 function getBaseTotal(qtd: number, express: boolean): number {
   const tabela: Record<number, [number, number]> = {
@@ -59,7 +60,6 @@ function getBaseTotal(qtd: number, express: boolean): number {
   if (tabela[qtd]) {
     return express ? tabela[qtd][1] : tabela[qtd][0];
   }
-  // 5+ tambores
   return qtd * (express ? 75 : 60);
 }
 
@@ -70,7 +70,10 @@ function calcularTotal(qtd: number, dias: number, express: boolean) {
   return { valorBase, diasExtras, custoDiarias, total: valorBase + custoDiarias };
 }
 
-// ─── Simulador de Preços ─────────────────────────────────────────────────────
+const fmt = (v: number) =>
+  v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+// ─── Simulador ───────────────────────────────────────────────────────────────
 
 function Simulador() {
   const [qtd, setQtd] = useState(1);
@@ -79,30 +82,28 @@ function Simulador() {
 
   const { valorBase, diasExtras, custoDiarias, total } = calcularTotal(qtd, dias, express);
 
-  const fmt = (v: number) =>
-    v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-
   const whatsappMsg = encodeURIComponent(
-    `Olá! Gostaria de um orçamento para:\n• ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dia${dias > 1 ? "s" : ""}\n• Serviço: ${express ? "Express (8h)" : "Convencional (24h)"}\n• Total estimado: ${fmt(total)}\n\nPode confirmar disponibilidade?`
+    `Olá! Gostaria de um orçamento:\n• ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dia${dias > 1 ? "s" : ""}\n• Serviço: ${express ? "Express (8h)" : "Convencional (24h)"}\n• Total estimado: ${fmt(total)}\n\nPode confirmar disponibilidade?`
   );
 
   return (
     <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden max-w-3xl mx-auto">
-      {/* Header */}
       <div className="bg-brand-dark text-white p-8">
         <div className="flex items-center gap-3 mb-2">
           <Calculator className="w-6 h-6 text-brand-yellow" />
           <h3 className="text-2xl font-display font-black">Simulador de Preços</h3>
         </div>
-        <p className="text-gray-400 text-sm">Selecione a quantidade e o prazo e veja o valor na hora.</p>
+        <p className="text-gray-400 text-sm">
+          Selecione a quantidade e o prazo e veja o valor na hora.
+        </p>
       </div>
 
       <div className="p-8">
         {/* Tipo de Serviço */}
         <div className="mb-8">
-          abel className="block text-sm font-black uppercase tracking-widest text-brand-gray mb-3">
+          <p className="block text-sm font-black uppercase tracking-widest text-brand-gray mb-3">
             Tipo de Serviço
-          </label>
+          </p>
           <div className="grid grid-cols-2 gap-3">
             {[
               { label: "Convencional", sub: "Entrega em até 24h", value: false },
@@ -129,9 +130,9 @@ function Simulador() {
 
         {/* Quantidade de Tambores */}
         <div className="mb-8">
-          abel className="block text-sm font-black uppercase tracking-widest text-brand-gray mb-3">
+          <p className="block text-sm font-black uppercase tracking-widest text-brand-gray mb-3">
             Quantidade de Tambores (200L)
-          </label>
+          </p>
           <div className="flex items-center gap-4">
             <button
               onClick={() => setQtd(Math.max(1, qtd - 1))}
@@ -141,7 +142,9 @@ function Simulador() {
             </button>
             <div className="flex-1 text-center">
               <span className="text-5xl font-display font-black text-brand-dark">{qtd}</span>
-              <span className="text-brand-gray ml-2 text-sm">{qtd === 1 ? "tambor" : "tambores"}</span>
+              <span className="text-brand-gray ml-2 text-sm">
+                {qtd === 1 ? "tambor" : "tambores"}
+              </span>
             </div>
             <button
               onClick={() => setQtd(qtd + 1)}
@@ -150,7 +153,6 @@ function Simulador() {
               +
             </button>
           </div>
-          {/* Atalhos rápidos */}
           <div className="flex gap-2 mt-3 justify-center flex-wrap">
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <button
@@ -170,9 +172,9 @@ function Simulador() {
 
         {/* Quantidade de Dias */}
         <div className="mb-8">
-          abel className="block text-sm font-black uppercase tracking-widest text-brand-gray mb-3">
+          <p className="block text-sm font-black uppercase tracking-widest text-brand-gray mb-3">
             Quantidade de Dias
-          </label>
+          </p>
           <div className="flex items-center gap-4">
             <button
               onClick={() => setDias(Math.max(1, dias - 1))}
@@ -182,7 +184,9 @@ function Simulador() {
             </button>
             <div className="flex-1 text-center">
               <span className="text-5xl font-display font-black text-brand-dark">{dias}</span>
-              <span className="text-brand-gray ml-2 text-sm">{dias === 1 ? "dia" : "dias"}</span>
+              <span className="text-brand-gray ml-2 text-sm">
+                {dias === 1 ? "dia" : "dias"}
+              </span>
             </div>
             <button
               onClick={() => setDias(dias + 1)}
@@ -191,7 +195,6 @@ function Simulador() {
               +
             </button>
           </div>
-          {/* Atalhos rápidos */}
           <div className="flex gap-2 mt-3 justify-center flex-wrap">
             {[1, 2, 3, 5, 7, 10, 15, 30].map((n) => (
               <button
@@ -207,21 +210,20 @@ function Simulador() {
               </button>
             ))}
           </div>
-          {dias <= 3 && (
+          {dias <= 3 ? (
             <p className="text-center text-xs text-green-600 font-bold mt-2">
-              ✅ Incluso nos primeiros 3 dias — sem cobrança adicional de diária
+              Incluso nos primeiros 3 dias — sem cobrança de diária extra
             </p>
-          )}
-          {dias > 3 && (
+          ) : (
             <p className="text-center text-xs text-brand-yellow font-bold mt-2">
-              ⚡ +{diasExtras} dia{diasExtras > 1 ? "s" : ""} extra{diasExtras > 1 ? "s" : ""} — R$ 20/tambor/dia
+              +{diasExtras} dia{diasExtras > 1 ? "s" : ""} extra{diasExtras > 1 ? "s" : ""} — R$ 20 por tambor/dia
             </p>
           )}
         </div>
 
-        {/* Resumo do Cálculo */}
+        {/* Resumo */}
         <div className="bg-[#F9FAFB] rounded-2xl p-6 mb-6">
-          <h4 className="font-black text-brand-dark mb-4 uppercase text-xs tracking-widest">Resumo</h4>
+          <p className="font-black text-brand-dark mb-4 uppercase text-xs tracking-widest">Resumo</p>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-brand-gray">
@@ -237,25 +239,27 @@ function Simulador() {
                 <span className="font-bold text-brand-dark">{fmt(custoDiarias)}</span>
               </div>
             )}
-            <div className="border-t border-gray-200 pt-2 mt-2 flex justify-between items-center">
+            <div className="border-t border-gray-200 pt-3 mt-2 flex justify-between items-center">
               <span className="font-black text-brand-dark">Total Estimado</span>
-              <span className="text-3xl font-display font-black text-brand-yellow">{fmt(total)}</span>
+              <span className="text-3xl font-display font-black text-brand-yellow">
+                {fmt(total)}
+              </span>
             </div>
           </div>
         </div>
 
         {/* CTA */}
         <a
-          href={`https://wa.me/5541997015424?text=${whatsappMsg}`}
+          href={`https://wa.me/${WHATSAPP_BASE}?text=${whatsappMsg}`}
           target="_blank"
           rel="noopener noreferrer"
           className="btn-primary w-full justify-center"
         >
-          💬 Solicitar este Orçamento pelo WhatsApp
+          Solicitar este Orçamento pelo WhatsApp
           <ArrowRight className="w-5 h-5" />
         </a>
         <p className="text-center text-xs text-brand-gray mt-3">
-          * Valores estimados. O orçamento final é confirmado pelo WhatsApp.
+          Valores estimados. O orçamento final é confirmado pelo WhatsApp.
         </p>
       </div>
     </div>
@@ -298,4 +302,6 @@ function FAQItem({ q, a }: { q: string; a: string }) {
       >
         <span>{q}</span>
         {open ? (
-          <ChevronUp className="w-5 h-5 text-brand-
+          <ChevronUp className="w-5 h-5 text-brand-yellow flex-shrink-0 ml-4" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-brand-yellow
