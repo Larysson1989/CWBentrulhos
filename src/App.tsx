@@ -1,6 +1,335 @@
-/** * @license * SPDX-License-Identifier: Apache-2.0 */ import { motion } from "motion/react"; import { Truck, Clock, Trash2, CheckCircle2, XCircle, Phone, Calendar, MapPin, Building2, Home, HardHat, ShoppingBag, Hospital, Factory, PartyPopper, ArrowRight, MessageCircle, Menu, X, ChevronDown, ChevronUp, Calculator, Zap, } from "lucide-react"; import { useState, useEffect } from "react"; const WHATSAPP_BASE = "5541997015424"; const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho%20em%20Curitiba."; const PHONE_LINK = "tel:+5541997015424"; const PHONE_DISPLAY = "(41) 99701-5424"; const HERO_IMG_URL = "/images/pagina1.jpg"; const Logo = () => ( <img src="/images/Logo_CWB_entulho.png" alt="CWB Entulhos - Remoção de Entulho em Curitiba" className="h-14 md:h-16 min-w-[120px] w-auto object-contain" width={160} height={64} /> ); function getBaseTotal(qtd: number, express: boolean): number { const tabela: Record<number, [number, number]> = { 1: [100, 130], 2: [150, 190], 3: [210, 260], 4: [260, 320], }; if (tabela[qtd]) return express ? tabela[qtd][1] : tabela[qtd][0]; return qtd * (express ? 75 : 60); } function calcularTotal(qtd: number, dias: number, express: boolean) { const valorBase = getBaseTotal(qtd, express); const diasExtras = Math.max(0, dias - 3); const custoDiarias = diasExtras * qtd * 20; return { valorBase, diasExtras, custoDiarias, total: valorBase + custoDiarias }; } const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); function Simulador() { const [qtd, setQtd] = useState(1); const [dias, setDias] = useState(3); const [express, setExpress] = useState(false); const { valorBase, diasExtras, custoDiarias, total } = calcularTotal(qtd, dias, express); const whatsappMsg = encodeURIComponent( `Olá! Gostaria de um orçamento:
-• ${qtd} tambor${qtd > 1 ? "es" : "" } por ${dias} dia${dias > 1 ? "s" : ""} 
-• Serviço: ${express ? "Express (8h)" : "Convencional (24h)"}
-• Total estimado: ${fmt(total)}
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
 
-Pode confirmar disponibilidade?` ); return ( <div className="bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden max-w-3xl mx-auto"> <div className="bg-brand-dark text-white p-8"> <div className="flex items-center gap-3 mb-2"> <Calculator className="w-6 h-6 text-brand-yellow" /> <h3 className="text-2xl font-display font-black">Simulador de Preços</h3> </div> <p className="text-gray-400 text-sm">Selecione a quantidade e o prazo e veja o valor na hora.</p> </div> <div className="p-8"> <div className="mb-8"> <p className="text-sm font-black uppercase tracking-widest text-brand-gray mb-3">Tipo de Serviço</p> <div className="grid grid-cols-2 gap-3"> {[ { label: "Convencional", sub: "Entrega em até 24h", value: false }, { label: "Express", sub: "Entrega em até 8h", value: true }, ].map((opt) => ( <button key={String(opt.value)} onClick={() => setExpress(opt.value)} className={`p-4 rounded-2xl border-2 text-left transition-all ${express === opt.value ? "border-brand-yellow bg-brand-yellow/10" : "border-gray-200 hover:border-brand-yellow/50"}`} > <div className="flex items-center gap-2 mb-1"> {opt.value && <Zap className="w-4 h-4 text-brand-yellow" />} <span className="font-bold text-brand-dark">{opt.label}</span> </div> <span className="text-xs text-brand-gray">{opt.sub}</span> </button> ))} </div> </div> <div className="mb-8"> <p className="text-sm font-black uppercase tracking-widest text-brand-gray mb-3">Quantidade de Tambores (200L)</p> <div className="flex items-center gap-4"> <button onClick={() => setQtd(Math.max(1, qtd - 1))} className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center text-xl font-bold hover:border-brand-yellow hover:text-brand-yellow transition-all">−</button> <div className="flex-1 text-center"> <span className="text-5xl font-display font-black text-brand-dark">{qtd}</span> <span className="text-brand-gray ml-2 text-sm">{qtd === 1 ? "tambor" : "tambores"}</span> </div> <button onClick={() => setQtd(qtd + 1)} className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center text-xl font-bold hover:border-brand-yellow hover:text-brand-yellow transition-all">+</button> </div> <div className="flex gap-2 mt-3 justify-center flex-wrap"> {[1, 2, 3, 4, 5, 6].map((n) => ( <button key={n} onClick={() => setQtd(n)} className={`px-3 py-1 rounded-full text-sm font-bold transition-all ${qtd === n ? "bg-brand-yellow text-brand-dark" : "bg-gray-100 text-brand-gray hover:bg-brand-yellow/20"}`}>{n}</button> ))} </div> </div> <div className="mb-8"> <p className="text-sm font-black uppercase tracking-widest text-brand-gray mb-3">Quantidade de Dias</p> <div className="flex items-center gap-4"> <button onClick={() => setDias(Math.max(1, dias - 1))} className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center text-xl font-bold hover:border-brand-yellow hover:text-brand-yellow transition-all">−</button> <div className="flex-1 text-center"> <span className="text-5xl font-display font-black text-brand-dark">{dias}</span> <span className="text-brand-gray ml-2 text-sm">{dias === 1 ? "dia" : "dias"}</span> </div> <button onClick={() => setDias(dias + 1)} className="w-12 h-12 rounded-full border-2 border-gray-200 flex items-center justify-center text-xl font-bold hover:border-brand-yellow hover:text-brand-yellow transition-all">+</button> </div> <div className="flex gap-2 mt-3 justify-center flex-wrap"> {[1, 2, 3, 5, 7, 10, 15, 30].map((n) => ( <button key={n} onClick={() => setDias(n)} className={`px-3 py-1 rounded-full text-sm font-bold transition-all ${dias === n ? "bg-brand-yellow text-brand-dark" : "bg-gray-100 text-brand-gray hover:bg-brand-yellow/20"}`}>{n}d</button> ))} </div> {dias <= 3 ? ( <p className="text-center text-xs text-green-600 font-bold mt-2">Incluso nos primeiros 3 dias — sem cobrança de diária extra</p> ) : ( <p className="text-center text-xs text-brand-yellow font-bold mt-2">+{diasExtras} dia${diasExtras > 1 ? "s" : ""} extra${diasExtras > 1 ? "s" : ""} — R$ 20 por tambor/dia</p> )} </div> <div className="bg-[#F9FAFB] rounded-2xl p-6 mb-6"> <p className="font-black text-brand-dark mb-4 uppercase text-xs tracking-widest">Resumo</p> <div className="space-y-2 text-sm"> <div className="flex justify-between"> <span className="text-brand-gray">{qtd} tambor${qtd > 1 ? "es" : ""} x {Math.min(dias, 3)} dia${Math.min(dias, 3) > 1 ? "s" : ""} ({express ? "Express" : "Convencional"})</span> <span className="font-bold text-brand-dark">{fmt(valorBase)}</span> </div> {diasExtras > 0 && ( <div className="flex justify-between"> <span className="text-brand-gray">{diasExtras} dia${diasExtras > 1 ? "s" : ""} extra${diasExtras > 1 ? "s" : ""} x {qtd} tambor${qtd > 1 ? "es" : ""} x R$ 20</span> <span className="font-bold text-brand-dark">{fmt(custoDiarias)}</span> </div> )} <div className="border-t border-gray-200 pt-3 mt-2 flex justify-between items-center"> <span className="font-black text-brand-dark">Total Estimado</span> <span className="text-3xl font-display font-black text-brand-yellow">{fmt(total)}</span> </div> </div> </div> <a href={`https://wa.me/${WHATSAPP_BASE}?text=${whatsappMsg}`} target="_blank" rel="noopener noreferrer" className="btn-primary w-full justify-center"> Solicitar este Orçamento pelo WhatsApp <ArrowRight className="w-5 h-5" /> </a> <p className="text-center text-xs text-brand-gray mt-3">Valores estimados. O orçamento final é confirmado pelo WhatsApp.</p> </div> </div> ); } const faqData = [ { q: "Quais tipos de material os latões podem receber?", a: "Entulho de construção (tijolos, concreto, azulejo, caliça), madeira, terra e areia. Não aceitamos lixo doméstico, produtos químicos ou materiais perigosos." }, { q: "Em quanto tempo os latões são entregues?", a: "Serviço Convencional: entrega em até 24h. Serviço Express: entrega em até 8h. Ambos em Curitiba e região metropolitana." }, { q: "Quais bairros de Curitiba vocês atendem?", a: "Atendemos toda Curitiba e região metropolitana. Entre em contato para confirmar disponibilidade na sua região." }, { q: "Como funciona a cobrança de diárias extras?", a: "Os planos incluem até 3 dias de uso. A partir do 4º dia, é cobrado R$ 20,00 por tambor por dia adicional." }, { q: "Como funciona o pagamento?", a: "Aceitamos diversas formas de pagamento. Entre em contato pelo WhatsApp para mais detalhes." }, ]; function FAQItem({ q, a }: { q: string; a: string }) { const [open, setOpen] = useState(false); return ( <div className="border border-gray-100 rounded-2xl overflow-hidden"> <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between p-6 text-left font-bold text-brand-dark hover:bg-brand-yellow/5 transition-colors" aria-expanded={open}> <span>{q}</span> {open ? <ChevronUp className="w-5 h-5 text-brand-yellow flex-shrink-0 ml-4" /> : <ChevronDown className="w-5 h-5 text-brand-yellow flex-shrink-0 ml-4" />} </button> {open && <div className="px-6 pb-6 text-brand-gray leading-relaxed">{a}</div>} </div> ); } export default function App() { const [isMenuOpen, setIsMenuOpen] = useState(false); const [scrolled, setScrolled] = useState(false); useEffect(() => { const handleScroll = () => setScrolled(window.scrollY > 50); window.addEventListener("scroll", handleScroll); return () => window.removeEventListener("scroll", handleScroll); }, []); const scrollToSection = (id: string) => { const element = document.getElementById(id); if (element) element.scrollIntoView({ behavior: "smooth" }); setIsMenuOpen(false); }; return ( <div className="min-h-screen relative overflow-x-hidden"> {/* Navbar */} <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-white/90 backdrop-blur-md shadow-md py-3" : "bg-transparent py-6"}`}> <div className="container mx-auto px-6 flex items-center justify-between"> <div className="cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}> <Logo /> </div> <div className="hidden md:flex items-center gap-8"> {["Diferenciais", "Como Funciona", "Para Quem", "Preços"].map((item) => ( <button key={item} onClick={() => scrollToSection(item.toLowerCase().replace(" ", "-"))} className="text-brand-dark font-bold hover:text-brand-yellow transition-colors">{item}</button> ))} <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-primary">WhatsApp</a> </div> <button className="md:hidden text-brand-dark" onClick={() => setIsMenuOpen(!isMenuOpen)}> {isMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />} </button> </div> {isMenuOpen && ( <div className="md:hidden bg-white border-t border-gray-100 py-6 px-6 space-y-4 shadow-xl"> {["Diferenciais", "Como Funciona", "Para Quem", "Preços"].map((item) => ( <button key={item} onClick={() => scrollToSection(item.toLowerCase().replace(" ", "-"))} className="block w-full text-left text-brand-dark font-bold py-2">{item}</button> ))} <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-primary w-full justify-center">WhatsApp</a> </div> )} </nav> {/* Hero Section */} <section className="pt-32 pb-20 md:pt-48 md:pb-32 relative"> <div className="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center"> <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}> <div className="inline-flex items-center gap-2 bg-brand-yellow/10 text-brand-yellow px-4 py-2 rounded-full mb-6"> <Clock className="w-4 h-4" /> <span className="text-sm font-black uppercase tracking-widest">Entrega Express em até 12 horas</span> </div> <h1 className="text-5xl md:text-7xl font-display font-black text-brand-dark leading-tight mb-8"> <span className="bg-gradient-to-r from-brand-yellow to-brand-yellow/60 bg-[length:100%_20%] bg-no-repeat bg-bottom">prática,</span> rápida e inteligente de remover entulho. </h1> <p className="text-lg text-brand-gray mb-10 max-w-lg leading-relaxed"> Atendimento em Curitiba e região metropolitana. Sem caçambas, sem burocracia, com organização total na sua obra. </p> <div className="flex flex-col sm:flex-row gap-4"> <button onClick={() => scrollToSection("preços")} className="btn-primary text-lg px-10 py-5">Simular Preço Agora</button> <a href={PHONE_LINK} className="flex items-center justify-center gap-3 px-10 py-5 font-black text-brand-dark hover:bg-gray-50 rounded-2xl transition-all"> <Phone className="w-6 h-6" /> {PHONE_DISPLAY} </a> </div> </motion.div> <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="relative"> <div className="absolute -inset-4 bg-brand-yellow/10 rounded-3xl blur-2xl -z-10"></div> <img src={HERO_IMG_URL} alt="Caminhão CWB Entulhos" className="rounded-3xl shadow-2xl w-full object-cover aspect-[4/5] md:aspect-auto" /> </motion.div> </div> </section> {/* Diferenciais */} <section id="diferenciais" className="py-24 bg-white"> <div className="container mx-auto px-6"> <div className="text-center max-w-3xl mx-auto mb-20"> <h2 className="text-4xl md:text-5xl font-display font-black text-brand-dark mb-6">Por que escolher a CWB Entulhos?</h2> <p className="text-brand-gray text-lg">Inovamos no mercado de Curitiba para oferecer o que há de mais moderno e eficiente em remoção de resíduos de construção.</p> </div> <div className="grid md:grid-cols-3 gap-8"> {[ { icon: Truck, title: "Caminhão de Pequeno Porte", desc: "Acessamos garagens, subsolos e locais estreitos onde caçambas grandes não entram." }, { icon: HardHat, title: "Equipe Especializada", desc: "Nossa equipe realiza o carregamento com rapidez, deixando o local limpo e organizado." }, { icon: CheckCircle2, title: "Descarte Ecológico", desc: "Todo material coletado é destinado a usinas de reciclagem licenciadas, com certificado." }, ].map((item, idx) => ( <div key={idx} className="p-10 rounded-3xl border border-gray-100 hover:border-brand-yellow/30 hover:shadow-xl transition-all group"> <div className="w-16 h-16 bg-brand-yellow/10 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-brand-yellow transition-colors"> <item.icon className="w-8 h-8 text-brand-yellow group-hover:text-brand-dark" /> </div> <h3 className="text-2xl font-black text-brand-dark mb-4">{item.title}</h3> <p className="text-brand-gray leading-relaxed">{item.desc}</p> </div> ))} </div> </div> </section> {/* Como Funciona */} <section id="como-funciona" className="py-24 bg-brand-dark text-white relative overflow-hidden"> <div className="container mx-auto px-6 relative z-10"> <div className="grid md:grid-cols-2 gap-20 items-center"> <div> <h2 className="text-4xl md:text-5xl font-display font-black mb-10">Como funciona o serviço?</h2> <div className="space-y-12"> {[ { step: "01", title: "Solicitação", desc: "Você entra em contato pelo WhatsApp e nos informa o volume de entulho ou solicita os tambores." }, { step: "02", title: "Entrega e Coleta", desc: "Entregamos os tambores vazios e, assim que estiverem cheios, nossa equipe realiza a coleta imediata." }, { step: "03", title: "Limpeza Final", desc: "Após a retirada, fazemos uma limpeza superficial da área onde estavam os tambores." }, ].map((item, idx) => ( <div key={idx} className="flex gap-6"> <span className="text-4xl font-display font-black text-brand-yellow/30">{item.step}</span> <div> <h3 className="text-2xl font-bold mb-3">{item.title}</h3> <p className="text-gray-400 leading-relaxed">{item.desc}</p> </div> </div> ))} </div> </div> <div className="bg-white/5 backdrop-blur-sm p-12 rounded-3xl border border-white/10"> <h3 className="text-3xl font-display font-black mb-8">Nossos Tambores</h3> <div className="flex items-center gap-6 mb-8 p-6 bg-white/5 rounded-2xl"> <Trash2 className="w-16 h-16 text-brand-yellow" /> <div> <p className="text-2xl font-black">200 Litros</p> <p className="text-gray-400">Capacidade ideal para obras residenciais e reformas em apartamentos.</p> </div> </div> <ul className="space-y-4"> {[ "Fácil movimentação", "Não danifica o piso", "Pode ser colocado em elevadores", "Ocupa pouco espaço no canteiro" ].map((li, i) => ( <li key={i} className="flex items-center gap-3"> <CheckCircle2 className="w-5 h-5 text-brand-yellow" /> {li} </li> ))} </ul> </div> </div> </div> </section> {/* Para Quem */} <section id="para-quem" className="py-24 bg-white"> <div className="container mx-auto px-6"> <div className="grid md:grid-cols-2 gap-16 items-center"> <div className="grid grid-cols-2 gap-4"> {[ { icon: Building2, label: "Condomínios" }, { icon: Home, label: "Reformas Residenciais" }, { icon: ShoppingBag, label: "Lojas em Shoppings" }, { icon: Factory, label: "Indústrias" }, { icon: Hospital, label: "Hospitais" }, { icon: PartyPopper, label: "Eventos" }, ].map((item, idx) => ( <div key={idx} className="p-8 bg-gray-50 rounded-2xl flex flex-col items-center text-center gap-4 hover:bg-brand-yellow/10 transition-colors"> <item.icon className="w-10 h-10 text-brand-dark" /> <span className="font-bold text-brand-dark">{item.label}</span> </div> ))} </div> <div> <h2 className="text-4xl md:text-5xl font-display font-black text-brand-dark mb-8">Ideal para qualquer necessidade</h2> <p className="text-brand-gray text-lg leading-relaxed mb-8"> Seja uma pequena reforma em casa ou uma grande obra industrial, a CWB Entulhos tem a solução logística perfeita para manter seu ambiente limpo sem o transtorno de caçambas tradicionais. </p> <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-primary px-10">Falar com Consultor</a> </div> </div> </div> </section> {/* Preços / Simulador */} <section id="preços" className="py-24 bg-gray-50"> <div className="container mx-auto px-6"> <div className="text-center max-w-3xl mx-auto mb-20"> <h2 className="text-4xl md:text-5xl font-display font-black text-brand-dark mb-6">Transparência Total</h2> <p className="text-brand-gray text-lg">Use nosso simulador para ter uma estimativa imediata do custo da sua remoção.</p> </div> <Simulador /> </div> </section> {/* FAQ */} <section className="py-24 bg-white"> <div className="container mx-auto px-6 max-w-4xl"> <h2 className="text-4xl font-display font-black text-brand-dark mb-16 text-center">Dúvidas Frequentes</h2> <div className="space-y-4"> {faqData.map((item, idx) => ( <FAQItem key={idx} {...item} /> ))} </div> </div> </section> {/* Footer */} <footer className="bg-brand-dark text-white pt-20 pb-10"> <div className="container mx-auto px-6"> <div className="grid md:grid-cols-4 gap-12 mb-20"> <div className="col-span-2"> <Logo /> <p className="mt-8 text-gray-400 max-w-md leading-relaxed"> Referência em Curitiba para remoção de resíduos de construction civil com agilidade, limpeza e compromisso ambiental. </p> </div> <div> <h4 className="font-bold text-lg mb-6 text-brand-yellow">Navegação</h4> <ul className="space-y-4"> {["Diferenciais", "Como Funciona", "Para Quem", "Preços"].map((item) => ( <li key={item}> <button onClick={() => scrollToSection(item.toLowerCase().replace(" ", "-"))} className="text-gray-400 hover:text-white transition-colors">{item}</button> </li> ))} </ul> </div> <div> <h4 className="font-bold text-lg mb-6 text-brand-yellow">Contato</h4> <ul className="space-y-4 text-gray-400"> <li className="flex items-center gap-3"><Phone className="w-5 h-5" /> {PHONE_DISPLAY}</li> <li className="flex items-center gap-3"><MapPin className="w-5 h-5" /> Curitiba e Região Metropolitana</li> </ul> </div> </div> <div className="border-t border-white/10 pt-10 flex flex-col md:row items-center justify-between gap-6 text-sm text-gray-500"> <p>© 2024 CWB Entulhos. Todos os direitos reservados.</p> <p>Desenvolvido com foco em agilidade e eficiência.</p> </div> </div> </footer> {/* WhatsApp Floating Button */} <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="fixed bottom-8 right-8 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center gap-2 group" aria-label="Fale conosco pelo WhatsApp" > <MessageCircle className="w-7 h-7" /> <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 font-bold whitespace-nowrap">Fale Conosco</span> </a> </div> ); } 
+import { motion } from "motion/react";
+import {
+  Truck,
+  Clock,
+  Trash2,
+  CheckCircle2,
+  XCircle,
+  Phone,
+  Calendar,
+  MapPin,
+  Building2,
+  Home,
+  HardHat,
+  ShoppingBag,
+  Hospital,
+  Factory,
+  PartyPopper,
+  ArrowRight,
+  MessageCircle,
+  Menu,
+  X,
+  ChevronDown,
+  ChevronUp,
+  Calculator,
+  Zap,
+} from "lucide-react";
+import { useState, useEffect } from "react";
+
+const WHATSAPP_LINK =
+  "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho%20em%20Curitiba.";
+const PHONE_LINK = "tel:+5541997015424";
+const PHONE_DISPLAY = "(41) 99701-5424";
+const HERO_IMG_URL = "/images/pagina1.jpg";
+
+const Logo = () => (
+  <img
+    src="/images/Logo_CWB_entulho.png"
+    alt="CWB Entulhos - Remoção de Entulho em Curitiba"
+    className="h-14 md:h-16 min-w-[120px] w-auto object-contain"
+  />
+);
+
+export default function App() {
+  const [scrolled, setScrolled] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-white font-sans text-brand-dark selection:bg-brand-yellow/30">
+      {/* Navbar */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled ? "bg-white/90 backdrop-blur-md shadow-md py-3" : "bg-transparent py-6"
+        }`}
+      >
+        <div className="container mx-auto px-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Logo />
+          </div>
+
+          <div className="hidden lg:flex items-center gap-8">
+            {["Serviços", "Simulador", "Como Funciona", "FAQ"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase().replace(" ", "-")}`}
+                className="text-sm font-bold hover:text-brand-yellow transition-colors uppercase tracking-wider"
+              >
+                {item}
+              </a>
+            ))}
+            <a
+              href={WHATSAPP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-brand-yellow hover:bg-brand-yellow/90 text-brand-dark px-6 py-3 rounded-xl font-bold transition-all hover:scale-105 active:scale-95 shadow-lg shadow-brand-yellow/20"
+            >
+              Orçamento Rápido
+            </a>
+          </div>
+
+          <button className="lg:hidden text-brand-dark" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative min-h-[90vh] flex items-center pt-20 overflow-hidden bg-brand-dark">
+        <div className="absolute inset-0 z-0">
+          <img
+            src={HERO_IMG_URL}
+            alt="Remoção de Entulho Profissional"
+            className="w-full h-full object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/80 to-transparent"></div>
+        </div>
+
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="max-w-3xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className="inline-block bg-brand-yellow text-brand-dark px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-widest mb-6 shadow-xl">
+                Líder em Curitiba e Região
+              </span>
+              <h1 className="text-5xl md:text-7xl font-display font-black text-white leading-[0.9] mb-6">
+                Entulho Acumulado? <br />
+                <span className="text-brand-yellow">Nós Resolvemos.</span>
+              </h1>
+              <p className="text-lg md:text-xl text-gray-300 mb-10 leading-relaxed max-w-xl">
+                Aluguel de tambores para coleta de entulho com entrega rápida, preço justo e descarte 100% legalizado.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <a
+                  href="#simulador"
+                  className="bg-brand-yellow text-brand-dark px-8 py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all hover:scale-105 hover:shadow-2xl hover:shadow-brand-yellow/40 group"
+                >
+                  <Calculator className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+                  Simular Preço
+                </a>
+                <a
+                  href={WHATSAPP_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-8 py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-all hover:bg-white hover:text-brand-dark"
+                >
+                  <MessageCircle className="w-6 h-6 text-brand-yellow" />
+                  Falar Agora
+                </a>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Simulador Section */}
+      <section id="simulador" className="py-24 bg-gray-50 border-y border-gray-100">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-display font-black mb-4">Simulador de Preços</h2>
+            <p className="text-gray-500 max-w-xl mx-auto">
+              Selecione a quantidade e o tempo de uso para ver o valor estimado na hora.
+            </p>
+          </div>
+
+          <div className="max-w-5xl mx-auto">
+            <PricingSimulator />
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-brand-dark text-white pt-24 pb-12">
+        <div className="container mx-auto px-6 text-center border-t border-white/10 pt-12">
+          <p className="text-gray-500 text-sm">
+            © {new Date().getFullYear()} CWB Entulhos. Todos os direitos reservados.
+          </p>
+        </div>
+      </footer>
+
+      {/* WhatsApp Float */}
+      <motion.a
+        href={WHATSAPP_LINK}
+        target="_blank"
+        rel="noopener noreferrer"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        whileHover={{ scale: 1.1 }}
+        className="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-2xl flex items-center justify-center group"
+      >
+        <MessageCircle className="w-8 h-8" />
+        <span className="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 font-bold whitespace-nowrap">
+          Falar com Especialista
+        </span>
+      </motion.a>
+    </div>
+  );
+}
+
+function PricingSimulator() {
+  const [qtd, setQtd] = useState(1);
+  const [dias, setDias] = useState(1);
+  const [express, setExpress] = useState(false);
+
+  const calculateTotal = () => {
+    let basePrice = 0;
+    const isExpress = express;
+
+    if (qtd === 1) basePrice = isExpress ? 185 : 150;
+    else if (qtd === 2) basePrice = isExpress ? 295 : 240;
+    else if (qtd === 3) basePrice = isExpress ? 390 : 315;
+    else if (qtd === 4) basePrice = isExpress ? 470 : 380;
+    else basePrice = qtd * (isExpress ? 75 : 60);
+
+    const extraDays = Math.max(0, dias - 3);
+    const extraCost = extraDays * 20 * qtd;
+
+    return basePrice + extraCost;
+  };
+
+  const total = calculateTotal();
+  const fmt = (v: number) => v.toLocaleString(\"pt-BR\", { style: \"currency\", currency: \"BRL\" });
+
+  return (
+    <div className=\"bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden grid lg:grid-cols-2\">
+      <div className=\"p-8 md:p-12 space-y-10\">
+        <div>
+          <label className=\"flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4\">
+            <Trash2 className=\"w-4 h-4 text-brand-yellow\" />
+            Quantidade de Tambores
+          </label>
+          <div className=\"flex items-center gap-4\">
+            <button
+              onClick={() => setQtd(Math.max(1, qtd - 1))}
+              className=\"w-14 h-14 rounded-2xl border-2 border-gray-100 flex items-center justify-center text-2xl font-black hover:bg-gray-50 transition-colors\"
+            >
+              -
+            </button>
+            <div className=\"flex-1 bg-gray-50 rounded-2xl h-14 flex items-center justify-center text-2xl font-black\">
+              {qtd} {qtd === 1 ? \"Tambor\" : \"Tambores\"}
+            </div>
+            <button
+              onClick={() => setQtd(qtd + 1)}
+              className=\"w-14 h-14 rounded-2xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-2xl font-black hover:bg-brand-yellow/80 transition-colors\"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label className=\"flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4\">
+            <Calendar className=\"w-4 h-4 text-brand-yellow\" />
+            Tempo de Permanência
+          </label>
+          <div className=\"flex items-center gap-4\">
+            <button
+              onClick={() => setDias(Math.max(1, dias - 1))}
+              className=\"w-14 h-14 rounded-2xl border-2 border-gray-100 flex items-center justify-center text-2xl font-black hover:bg-gray-50 transition-colors\"
+            >
+              -
+            </button>
+            <div className=\"flex-1 bg-gray-50 rounded-2xl h-14 flex items-center justify-center text-2xl font-black text-center\">
+              {dias} {dias === 1 ? \"Dia\" : \"Dias\"}
+              <span className=\"block text-[10px] text-gray-400 font-bold uppercase mt-1 leading-none\">
+                {dias > 3 ? `(+${dias - 3} extras)` : \"(Até 3 dias inclusos)\"}
+              </span>
+            </div>
+            <button
+              onClick={() => setDias(dias + 1)}
+              className=\"w-14 h-14 rounded-2xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-2xl font-black hover:bg-brand-yellow/80 transition-colors\"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label className=\"flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4\">
+            <Zap className=\"w-4 h-4 text-brand-yellow\" />
+            Tipo de Serviço
+          </label>
+          <div className=\"grid grid-cols-2 gap-4\">
+            <button
+              onClick={() => setExpress(false)}
+              className={`p-4 rounded-2xl border-2 transition-all text-left ${
+                !express ? \"border-brand-yellow bg-brand-yellow/5\" : \"border-gray-100 hover:bg-gray-50\"
+              }`}
+            >
+              <span className=\"block font-black text-lg\">Convencional</span>
+              <span className=\"text-xs text-gray-500\">Entrega em até 24h</span>
+            </button>
+            <button
+              onClick={() => setExpress(true)}
+              className={`p-4 rounded-2xl border-2 transition-all text-left ${
+                express ? \"border-brand-yellow bg-brand-yellow/5\" : \"border-gray-100 hover:bg-gray-50\"
+              }`}
+            >
+              <span className=\"block font-black text-lg\">Express</span>
+              <span className=\"text-xs text-gray-500\">Entrega em até 8h</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className=\"bg-brand-dark p-8 md:p-12 text-white flex flex-col justify-between relative overflow-hidden\">
+        <div className=\"relative z-10\">
+          <h3 className=\"text-sm font-black uppercase tracking-widest text-brand-yellow mb-8\">Resumo do Pedido</h3>
+          <ul className=\"space-y-4 mb-10\">
+            <li className=\"flex justify-between items-center text-lg\">
+              <span className=\"text-gray-400 font-bold uppercase text-xs tracking-wider\">Serviço</span>
+              <span className=\"font-bold\">{express ? \"Express (8h)\" : \"Convencional (24h)\"}</span>
+            </li>
+            <li className=\"flex justify-between items-center text-lg\">
+              <span className=\"text-gray-400 font-bold uppercase text-xs tracking-wider\">Quantidade</span>
+              <span className=\"font-bold\">{qtd} {qtd === 1 ? \"Tambor\" : \"Tambores\"}</span>
+            </li>
+            <li className=\"flex justify-between items-center text-lg\">
+              <span className=\"text-gray-400 font-bold uppercase text-xs tracking-wider\">Período</span>
+              <span className=\"font-bold\">{dias} {dias === 1 ? \"Dia\" : \"Dias\"}</span>
+            </li>
+          </ul>
+        </div>
+
+        <div className=\"relative z-10 pt-8 border-t border-white/10\">
+          <div className=\"flex items-baseline justify-between mb-8\">
+            <span className=\"text-gray-400 font-black uppercase tracking-widest text-xs\">Total Estimado</span>
+            <span className=\"text-5xl md:text-6xl font-display font-black text-brand-yellow\">{fmt(total)}</span>
+          </div>
+          <a
+            href={`${WHATSAPP_LINK}%20*Pedido%20Simulado*%3A%0A•%20${qtd}%20tambor${qtd > 1 ? \"es\" : \"\"}%20por%20${dias}%20dia${dias > 1 ? \"s\" : \"\"}%0A•%20Serviço%3A%20${express ? \"Express (8h)\" : \"Convencional (24h)\"}%0A•%20Total%20estimado%3A%20${fmt(total)}%0A%0APode%20confirmar%20disponibilidade?`}
+            target=\"_blank\"
+            rel=\"noopener noreferrer\"
+            className=\"w-full bg-brand-yellow text-brand-dark py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-2xl shadow-brand-yellow/20 group\"
+          >
+            Confirmar no WhatsApp
+            <ArrowRight className=\"w-6 h-6 group-hover:translate-x-2 transition-transform\" />
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
