@@ -211,29 +211,29 @@ function PricingSimulator() {
   };
 
   const total = calculateTotal();
-  const fmt = (v: number) => v.toLocaleString(\"pt-BR\", { style: \"currency\", currency: \"BRL\" });
+  const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
   return (
-    <div className=\"bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden grid lg:grid-cols-2\">
-      <div className=\"p-8 md:p-12 space-y-10\">
+    <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 overflow-hidden grid lg:grid-cols-2">
+      <div className="p-8 md:p-12 space-y-10">
         <div>
-          <label className=\"flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4\">
-            <Trash2 className=\"w-4 h-4 text-brand-yellow\" />
+          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+            <Trash2 className="w-4 h-4 text-brand-yellow" />
             Quantidade de Tambores
           </label>
-          <div className=\"flex items-center gap-4\">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setQtd(Math.max(1, qtd - 1))}
-              className=\"w-14 h-14 rounded-2xl border-2 border-gray-100 flex items-center justify-center text-2xl font-black hover:bg-gray-50 transition-colors\"
+              className="w-14 h-14 rounded-2xl border-2 border-gray-100 flex items-center justify-center text-2xl font-black hover:bg-gray-50 transition-colors"
             >
               -
             </button>
-            <div className=\"flex-1 bg-gray-50 rounded-2xl h-14 flex items-center justify-center text-2xl font-black\">
-              {qtd} {qtd === 1 ? \"Tambor\" : \"Tambores\"}
+            <div className="flex-1 bg-gray-50 rounded-2xl h-14 flex items-center justify-center text-2xl font-black">
+              {qtd} {qtd === 1 ? "Tambor" : "Tambores"}
             </div>
             <button
               onClick={() => setQtd(qtd + 1)}
-              className=\"w-14 h-14 rounded-2xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-2xl font-black hover:bg-brand-yellow/80 transition-colors\"
+              className="w-14 h-14 rounded-2xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-2xl font-black hover:bg-brand-yellow/80 transition-colors"
             >
               +
             </button>
@@ -241,26 +241,26 @@ function PricingSimulator() {
         </div>
 
         <div>
-          <label className=\"flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4\">
-            <Calendar className=\"w-4 h-4 text-brand-yellow\" />
+          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+            <Calendar className="w-4 h-4 text-brand-yellow" />
             Tempo de Permanência
           </label>
-          <div className=\"flex items-center gap-4\">
+          <div className="flex items-center gap-4">
             <button
               onClick={() => setDias(Math.max(1, dias - 1))}
-              className=\"w-14 h-14 rounded-2xl border-2 border-gray-100 flex items-center justify-center text-2xl font-black hover:bg-gray-50 transition-colors\"
+              className="w-14 h-14 rounded-2xl border-2 border-gray-100 flex items-center justify-center text-2xl font-black hover:bg-gray-50 transition-colors"
             >
               -
             </button>
-            <div className=\"flex-1 bg-gray-50 rounded-2xl h-14 flex items-center justify-center text-2xl font-black text-center\">
-              {dias} {dias === 1 ? \"Dia\" : \"Dias\"}
-              <span className=\"block text-[10px] text-gray-400 font-bold uppercase mt-1 leading-none\">
-                {dias > 3 ? `(+${dias - 3} extras)` : \"(Até 3 dias inclusos)\"}
+            <div className="flex-1 bg-gray-50 rounded-2xl h-14 flex items-center justify-center text-2xl font-black text-center">
+              {dias} {dias === 1 ? "Dia" : "Dias"}
+              <span className="block text-[10px] text-gray-400 font-bold uppercase mt-1 leading-none">
+                {dias > 3 ? `(+${dias - 3} extras)` : "(Até 3 dias inclusos)"}
               </span>
             </div>
             <button
               onClick={() => setDias(dias + 1)}
-              className=\"w-14 h-14 rounded-2xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-2xl font-black hover:bg-brand-yellow/80 transition-colors\"
+              className="w-14 h-14 rounded-2xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-2xl font-black hover:bg-brand-yellow/80 transition-colors"
             >
               +
             </button>
@@ -268,65 +268,65 @@ function PricingSimulator() {
         </div>
 
         <div>
-          <label className=\"flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4\">
-            <Zap className=\"w-4 h-4 text-brand-yellow\" />
+          <label className="flex items-center gap-3 text-sm font-black uppercase tracking-widest text-gray-400 mb-4">
+            <Zap className="w-4 h-4 text-brand-yellow" />
             Tipo de Serviço
           </label>
-          <div className=\"grid grid-cols-2 gap-4\">
+          <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => setExpress(false)}
               className={`p-4 rounded-2xl border-2 transition-all text-left ${
-                !express ? \"border-brand-yellow bg-brand-yellow/5\" : \"border-gray-100 hover:bg-gray-50\"
+                !express ? "border-brand-yellow bg-brand-yellow/5" : "border-gray-100 hover:bg-gray-50"
               }`}
             >
-              <span className=\"block font-black text-lg\">Convencional</span>
-              <span className=\"text-xs text-gray-500\">Entrega em até 24h</span>
+              <span className="block font-black text-lg">Convencional</span>
+              <span className="text-xs text-gray-500">Entrega em até 24h</span>
             </button>
             <button
               onClick={() => setExpress(true)}
               className={`p-4 rounded-2xl border-2 transition-all text-left ${
-                express ? \"border-brand-yellow bg-brand-yellow/5\" : \"border-gray-100 hover:bg-gray-50\"
+                express ? "border-brand-yellow bg-brand-yellow/5" : "border-gray-100 hover:bg-gray-50"
               }`}
             >
-              <span className=\"block font-black text-lg\">Express</span>
-              <span className=\"text-xs text-gray-500\">Entrega em até 8h</span>
+              <span className="block font-black text-lg">Express</span>
+              <span className="text-xs text-gray-500">Entrega em até 8h</span>
             </button>
           </div>
         </div>
       </div>
 
-      <div className=\"bg-brand-dark p-8 md:p-12 text-white flex flex-col justify-between relative overflow-hidden\">
-        <div className=\"relative z-10\">
-          <h3 className=\"text-sm font-black uppercase tracking-widest text-brand-yellow mb-8\">Resumo do Pedido</h3>
-          <ul className=\"space-y-4 mb-10\">
-            <li className=\"flex justify-between items-center text-lg\">
-              <span className=\"text-gray-400 font-bold uppercase text-xs tracking-wider\">Serviço</span>
-              <span className=\"font-bold\">{express ? \"Express (8h)\" : \"Convencional (24h)\"}</span>
+      <div className="bg-brand-dark p-8 md:p-12 text-white flex flex-col justify-between relative overflow-hidden">
+        <div className="relative z-10">
+          <h3 className="text-sm font-black uppercase tracking-widest text-brand-yellow mb-8">Resumo do Pedido</h3>
+          <ul className="space-y-4 mb-10">
+            <li className="flex justify-between items-center text-lg">
+              <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Serviço</span>
+              <span className="font-bold">{express ? "Express (8h)" : "Convencional (24h)"}</span>
             </li>
-            <li className=\"flex justify-between items-center text-lg\">
-              <span className=\"text-gray-400 font-bold uppercase text-xs tracking-wider\">Quantidade</span>
-              <span className=\"font-bold\">{qtd} {qtd === 1 ? \"Tambor\" : \"Tambores\"}</span>
+            <li className="flex justify-between items-center text-lg">
+              <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Quantidade</span>
+              <span className="font-bold">{qtd} {qtd === 1 ? "Tambor" : "Tambores"}</span>
             </li>
-            <li className=\"flex justify-between items-center text-lg\">
-              <span className=\"text-gray-400 font-bold uppercase text-xs tracking-wider\">Período</span>
-              <span className=\"font-bold\">{dias} {dias === 1 ? \"Dia\" : \"Dias\"}</span>
+            <li className="flex justify-between items-center text-lg">
+              <span className="text-gray-400 font-bold uppercase text-xs tracking-wider">Período</span>
+              <span className="font-bold">{dias} {dias === 1 ? "Dia" : "Dias"}</span>
             </li>
           </ul>
         </div>
 
-        <div className=\"relative z-10 pt-8 border-t border-white/10\">
-          <div className=\"flex items-baseline justify-between mb-8\">
-            <span className=\"text-gray-400 font-black uppercase tracking-widest text-xs\">Total Estimado</span>
-            <span className=\"text-5xl md:text-6xl font-display font-black text-brand-yellow\">{fmt(total)}</span>
+        <div className="relative z-10 pt-8 border-t border-white/10">
+          <div className="flex items-baseline justify-between mb-8">
+            <span className="text-gray-400 font-black uppercase tracking-widest text-xs">Total Estimado</span>
+            <span className="text-5xl md:text-6xl font-display font-black text-brand-yellow">{fmt(total)}</span>
           </div>
           <a
-            href={`${WHATSAPP_LINK}%20*Pedido%20Simulado*%3A%0A•%20${qtd}%20tambor${qtd > 1 ? \"es\" : \"\"}%20por%20${dias}%20dia${dias > 1 ? \"s\" : \"\"}%0A•%20Serviço%3A%20${express ? \"Express (8h)\" : \"Convencional (24h)\"}%0A•%20Total%20estimado%3A%20${fmt(total)}%0A%0APode%20confirmar%20disponibilidade?`}
-            target=\"_blank\"
-            rel=\"noopener noreferrer\"
-            className=\"w-full bg-brand-yellow text-brand-dark py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-2xl shadow-brand-yellow/20 group\"
+            href={`${WHATSAPP_LINK}%20*Pedido%20Simulado*%3A%0A•%20${qtd}%20tambor${qtd > 1 ? "es" : ""}%20por%20${dias}%20dia${dias > 1 ? "s" : ""}%0A•%20Serviço%3A%20${express ? "Express (8h)" : "Convencional (24h)"}%0A•%20Total%20estimado%3A%20${fmt(total)}%0A%0APode%20confirmar%20disponibilidade?`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-brand-yellow text-brand-dark py-5 rounded-2xl font-black text-xl flex items-center justify-center gap-3 transition-all hover:scale-[1.02] active:scale-95 shadow-2xl shadow-brand-yellow/20 group"
           >
             Confirmar no WhatsApp
-            <ArrowRight className=\"w-6 h-6 group-hover:translate-x-2 transition-transform\" />
+            <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
           </a>
         </div>
       </div>
