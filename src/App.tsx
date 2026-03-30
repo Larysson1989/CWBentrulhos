@@ -4,39 +4,92 @@
  */
 
 import { motion } from "motion/react";
-import { 
-  Truck, 
-  Clock, 
-  Trash2, 
-  CheckCircle2, 
-  XCircle, 
-  Phone, 
-  Calendar, 
-  MapPin, 
-  Building2, 
-  Home, 
-  HardHat, 
-  ShoppingBag, 
-  Hospital, 
-  Factory, 
+import {
+  Truck,
+  Clock,
+  Trash2,
+  CheckCircle2,
+  XCircle,
+  Phone,
+  Calendar,
+  MapPin,
+  Building2,
+  Home,
+  HardHat,
+  ShoppingBag,
+  Hospital,
+  Factory,
   PartyPopper,
   ArrowRight,
   MessageCircle,
   Menu,
-  X
+  X,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const WHATSAPP_LINK = "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho.";
+const WHATSAPP_LINK =
+  "https://wa.me/5541997015424?text=Olá%2C%20gostaria%20de%20um%20orçamento%20para%20remoção%20de%20entulho%20em%20Curitiba.";
+const PHONE_LINK = "tel:+5541997015424";
+const PHONE_DISPLAY = "(41) 99701-5424";
 const HERO_IMG_URL = "/images/pagina1.jpg";
 
 const Logo = () => (
   <img
     src="/images/Logo_CWB_entulho.png"
-    alt="CWB Entulhos"
+    alt="CWB Entulhos - Remoção de Entulho em Curitiba"
     className="h-14 md:h-16 min-w-[120px] w-auto object-contain"
+    width={160}
+    height={64}
   />
 );
+
+const faqData = [
+  {
+    q: "Quais tipos de material os latões podem receber?",
+    a: "Entulho de construção (tijolos, concreto, azulejo, caliça), madeira, terra e areia. Não aceitamos lixo doméstico, produtos químicos ou materiais perigosos.",
+  },
+  {
+    q: "Em quanto tempo os latões são entregues?",
+    a: "Realizamos a entrega em até 12 horas após a solicitação, em Curitiba e região metropolitana.",
+  },
+  {
+    q: "Quais bairros de Curitiba vocês atendem?",
+    a: "Atendemos toda Curitiba e região metropolitana. Entre em contato para confirmar disponibilidade na sua região.",
+  },
+  {
+    q: "Como funciona o pagamento?",
+    a: "Aceitamos diversas formas de pagamento. Entre em contato pelo WhatsApp para mais detalhes.",
+  },
+  {
+    q: "O que está incluído no preço do plano?",
+    a: "Cada plano inclui entrega do latão e período de uso conforme o plano escolhido. A retirada é agendada conforme sua necessidade e cobrada separadamente (R$ 50 por retirada).",
+  },
+];
+
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="border border-gray-100 rounded-2xl overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between p-6 text-left font-bold text-brand-dark hover:bg-brand-yellow/5 transition-colors"
+        aria-expanded={open}
+      >
+        <span>{q}</span>
+        {open ? (
+          <ChevronUp className="w-5 h-5 text-brand-yellow flex-shrink-0 ml-4" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-brand-yellow flex-shrink-0 ml-4" />
+        )}
+      </button>
+      {open && (
+        <div className="px-6 pb-6 text-brand-gray leading-relaxed">{a}</div>
+      )}
+    </div>
+  );
+}
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -67,42 +120,66 @@ export default function App() {
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
             {["Diferenciais", "Como Funciona", "Para Quem", "Preços"].map((item) => (
-              <button 
-                key={item} 
+              <button
+                key={item}
                 onClick={() => scrollToSection(item.toLowerCase().replace(" ", "-"))}
                 className="text-sm font-semibold hover:text-brand-yellow transition-colors"
               >
                 {item}
               </button>
             ))}
-            <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="bg-brand-dark text-white text-sm font-bold py-2.5 px-6 rounded-full hover:bg-brand-gray transition-all">
+            <a
+              href={PHONE_LINK}
+              className="text-sm font-bold text-brand-dark hover:text-brand-yellow transition-colors"
+              aria-label={`Ligar para ${PHONE_DISPLAY}`}
+            >
+              📞 {PHONE_DISPLAY}
+            </a>
+            <a
+              href={WHATSAPP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-brand-dark text-white text-sm font-bold py-2.5 px-6 rounded-full hover:bg-brand-gray transition-all"
+            >
               WhatsApp
             </a>
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button className="md:hidden text-brand-dark" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button
+            className="md:hidden text-brand-dark"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-label="Abrir menu"
+          >
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
 
         {/* Mobile Menu Overlay */}
         {isMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="absolute top-full left-0 right-0 bg-white shadow-xl p-6 flex flex-col gap-4 md:hidden"
           >
             {["Diferenciais", "Como Funciona", "Para Quem", "Preços"].map((item) => (
-              <button 
-                key={item} 
+              <button
+                key={item}
                 onClick={() => scrollToSection(item.toLowerCase().replace(" ", "-"))}
                 className="text-left py-2 font-semibold"
               >
                 {item}
               </button>
             ))}
-            <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-primary w-full">
+            <a href={PHONE_LINK} className="py-2 font-bold text-brand-dark">
+              📞 {PHONE_DISPLAY}
+            </a>
+            <a
+              href={WHATSAPP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary w-full"
+            >
               Falar no WhatsApp
             </a>
           </motion.div>
@@ -122,15 +199,30 @@ export default function App() {
               Entrega Express em até 12 horas
             </div>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-display font-bold leading-[1.1] mb-6">
-              A forma mais <span className="text-brand-yellow underline decoration-brand-yellow/30 underline-offset-8">prática</span>, rápida e inteligente de remover entulho.
+              Remoção de Entulho em{" "}
+              <span className="text-brand-yellow underline decoration-brand-yellow/30 underline-offset-8">
+                Curitiba
+              </span>{" "}
+              com Rapidez e Responsabilidade.
             </h1>
             <p className="text-lg md:text-xl text-brand-gray mb-10 max-w-lg">
-              Atendimento em Curitiba e região metropolitana. Sem caçambas, sem burocracia, com organização total na sua obra.
+              Latões para obra, reforma e limpeza de terreno. Atendemos toda Curitiba e região metropolitana. Você chama, nós buscamos — sem complicação.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-primary">
-                Solicitar orçamento no WhatsApp
+              <a
+                href={WHATSAPP_LINK}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary"
+              >
+                💬 Pedir Orçamento pelo WhatsApp
                 <ArrowRight className="w-5 h-5" />
+              </a>
+              <a
+                href={PHONE_LINK}
+                className="flex items-center justify-center gap-2 border-2 border-brand-dark text-brand-dark font-bold py-3 px-6 rounded-full hover:bg-brand-dark hover:text-white transition-all min-h-[48px]"
+              >
+                📞 {PHONE_DISPLAY}
               </a>
             </div>
           </motion.div>
@@ -143,10 +235,12 @@ export default function App() {
             className="relative flex justify-center"
           >
             <div className="relative z-10 rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(245,158,11,0.15)] border-4 border-white max-w-md w-full">
-              <img 
+              <img
                 src={HERO_IMG_URL}
-                alt="CWB Entulhos - Remoção de Entulho em Curitiba"
+                alt="Latões de remoção de entulho CWB Entulhos em obra em Curitiba"
                 className="w-full h-auto object-cover"
+                width={600}
+                height={450}
                 loading="eager"
                 decoding="async"
               />
@@ -168,14 +262,14 @@ export default function App() {
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: <Clock />, title: "Entrega Express", desc: "Receba seus latões em até 4 horas após a solicitação. Rapidez imbatível." },
+              { icon: <Clock />, title: "Entrega Express", desc: "Receba seus latões em até 12 horas após a solicitação. Rapidez imbatível." },
               { icon: <Calendar />, title: "Horário Marcado", desc: "Agendamos a entrega e a coleta conforme a sua necessidade e cronograma." },
-              { icon: <Trash2 />, title: "Sem Caçamba", desc: "Ideal para locais sem espaço ou onde a caçamba tradicional é proibida." },
+              { icon: <Trash2 />, title: "Sem Caçamba Tradicional", desc: "Ideal para locais sem espaço ou onde a caçamba tradicional é proibida." },
               { icon: <CheckCircle2 />, title: "Obra Organizada", desc: "Latões de 200L que mantêm o ambiente limpo e facilitam a movimentação." },
               { icon: <Building2 />, title: "Sem Burocracia", desc: "Livre-se de licenças complicadas para ocupação de via pública." },
-              { icon: <Phone />, title: "Atendimento Direto", desc: "Fale diretamente conosco via WhatsApp. Sem esperas, sem complicação." }
+              { icon: <Phone />, title: "Atendimento Direto", desc: "Fale diretamente conosco via WhatsApp. Sem esperas, sem complicação." },
             ].map((item, index) => (
-              <motion.div 
+              <motion.div
                 key={index}
                 whileHover={{ y: -5 }}
                 className="p-8 rounded-2xl bg-[#F9FAFB] border border-gray-100 hover:border-brand-yellow/30 transition-all group"
@@ -201,233 +295,4 @@ export default function App() {
               Processo otimizado para que você não perca tempo com o que não importa.
             </p>
           </div>
-          <div className="grid md:grid-cols-5 gap-8">
-            {[
-              { step: "01", title: "Solicite", desc: "Peça pelo WhatsApp em segundos." },
-              { step: "02", title: "Receba", desc: "Latões entregues no local da obra." },
-              { step: "03", title: "Utilize", desc: "Encha os latões durante sua reforma." },
-              { step: "04", title: "Coleta", desc: "Agendamos a retirada rápida." },
-              { step: "05", title: "Descarte", desc: "Fazemos o descarte correto e legal." }
-            ].map((item, index) => (
-              <div key={index} className="relative group">
-                <div className="text-5xl font-display font-black text-brand-yellow/20 mb-4">{item.step}</div>
-                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
-                {index < 4 && (
-                  <div className="hidden md:block absolute top-6 -right-4 text-brand-yellow/30">
-                    <ArrowRight className="w-6 h-6" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Para Quem Section */}
-      <section id="para-quem" className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="section-title">Soluções para todos os setores</h2>
-            <p className="section-subtitle">Atendemos desde pequenas reformas residenciais até grandes demandas industriais.</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { icon: <Home />, label: "Apartamentos" },
-              { icon: <Building2 />, label: "Residências" },
-              { icon: <HardHat />, label: "Construtoras" },
-              { icon: <ArrowRight />, label: "Engenheiros" },
-              { icon: <ShoppingBag />, label: "Shoppings" },
-              { icon: <Hospital />, label: "Hospitais" },
-              { icon: <Factory />, label: "Indústrias" },
-              { icon: <PartyPopper />, label: "Eventos" }
-            ].map((item, index) => (
-              <div key={index} className="flex flex-col items-center justify-center p-8 rounded-2xl bg-[#F9FAFB] border border-gray-100 hover:shadow-lg transition-all">
-                <div className="text-brand-yellow mb-4">{item.icon}</div>
-                <span className="font-bold text-sm text-center">{item.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Planos Section */}
-      <section id="preços" className="py-24 bg-[#F9FAFB]">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="section-title">Planos e Preços</h2>
-            <p className="section-subtitle">Transparência total para o seu planejamento financeiro.</p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {[
-              { title: "Plano 3 dias", price: "65", period: "por latão", highlight: false },
-              { title: "Plano 7 dias", price: "100", period: "por latão", highlight: true },
-              { title: "Plano 30 dias", price: "180", period: "por latão", highlight: false }
-            ].map((plan, index) => (
-              <div 
-                key={index} 
-                className={`p-10 rounded-3xl flex flex-col items-center text-center transition-all ${plan.highlight ? "bg-brand-dark text-white scale-105 shadow-2xl relative z-10" : "bg-white text-brand-dark"}`}
-              >
-                {plan.highlight && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-yellow text-brand-dark text-xs font-black uppercase px-4 py-1 rounded-full">
-                    Mais Popular
-                  </div>
-                )}
-                <h3 className="text-xl font-bold mb-6">{plan.title}</h3>
-                <div className="flex items-baseline gap-1 mb-6">
-                  <span className="text-2xl font-bold">R$</span>
-                  <span className="text-6xl font-display font-black">{plan.price}</span>
-                </div>
-                <p className={`text-sm mb-8 ${plan.highlight ? "text-gray-400" : "text-brand-gray"}`}>{plan.period}</p>
-                <div className="w-full h-px bg-gray-200 mb-8 opacity-20"></div>
-                <ul className="space-y-4 mb-10 text-sm">
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-brand-yellow" /> Entrega inclusa</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-brand-yellow" /> Retirada agendada</li>
-                  <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-brand-yellow" /> Descarte correto</li>
-                </ul>
-                <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className={`w-full py-4 rounded-xl font-bold transition-all ${plan.highlight ? "bg-brand-yellow text-brand-dark hover:bg-yellow-500" : "bg-brand-dark text-white hover:bg-brand-gray"}`}>
-                  Contratar Agora
-                </a>
-              </div>
-            ))}
-          </div>
-          <div className="mt-12 max-w-2xl mx-auto glass-card p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="bg-brand-yellow/10 p-2 rounded-lg">
-                <Truck className="w-6 h-6 text-brand-yellow" />
-              </div>
-              <div>
-                <p className="text-sm font-bold">Taxa de coleta</p>
-                <p className="text-xs text-brand-gray">Valor fixo por retirada</p>
-              </div>
-            </div>
-            <div className="text-2xl font-display font-black text-brand-yellow">R$ 50</div>
-          </div>
-          <p className="text-center text-sm text-brand-gray mt-8">
-            * Atendemos qualquer volume. Valores podem variar conforme necessidade específica.
-          </p>
-        </div>
-      </section>
-
-      {/* Comparativo Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-16">
-            <h2 className="section-title">CWB Entulhos vs Caçamba Tradicional</h2>
-            <p className="section-subtitle">Entenda por que o nosso modelo é a escolha inteligente para obras urbanas.</p>
-          </div>
-          <div className="max-w-4xl mx-auto overflow-hidden rounded-3xl border border-gray-100 shadow-xl">
-            <div className="grid grid-cols-2 bg-brand-dark text-white p-6 md:p-8">
-              <div className="text-center font-display font-bold text-lg md:text-xl text-brand-yellow">CWB Entulhos</div>
-              <div className="text-center font-display font-bold text-lg md:text-xl text-gray-400">Caçamba Comum</div>
-            </div>
-            {[
-              { item: "Praticidade", label: "Ideal para ambientes internos" },
-              { item: "Espaço", label: "Ocupa espaço na rua/calçada" },
-              { item: "Burocracia", label: "Exige autorização da prefeitura" },
-              { item: "Organização", label: "Visual agressivo e desorganizado" },
-              { item: "Agilidade", label: "Demora na entrega e retirada" }
-            ].map((row, index) => (
-              <div key={index} className={`grid grid-cols-2 p-6 md:p-8 border-b border-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-[#F9FAFB]"}`}>
-                <div className="flex flex-col items-center text-center px-2">
-                  <CheckCircle2 className="w-6 h-6 text-green-500 mb-2" />
-                  <span className="text-sm font-bold">
-                    {row.item === "Praticidade" ? "Mais prático" : row.item === "Espaço" ? "Compacto" : row.item === "Burocracia" ? "Sem burocracia" : "Mais organizado"}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center text-center px-2 border-l border-gray-100">
-                  <XCircle className="w-6 h-6 text-red-400 mb-2" />
-                  <span className="text-sm text-brand-gray">{row.label}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Area de Atendimento */}
-      <section className="py-20 bg-brand-yellow">
-        <div className="container mx-auto px-6 text-center">
-          <MapPin className="w-12 h-12 text-brand-dark mx-auto mb-6" />
-          <h2 className="text-3xl md:text-5xl font-display font-black text-brand-dark mb-4">
-            Atendemos toda Curitiba e região metropolitana.
-          </h2>
-          <p className="text-brand-dark/70 font-bold uppercase tracking-widest">Sua obra merece essa facilidade.</p>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-24 bg-brand-dark text-white relative overflow-hidden">
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-yellow/10 rounded-full blur-3xl"></div>
-        <div className="container mx-auto px-6 text-center relative z-10">
-          <h2 className="text-4xl md:text-6xl font-display font-bold mb-8">
-            Precisa remover entulho com <br className="hidden md:block" /> rapidez e organização?
-          </h2>
-          <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="btn-primary mx-auto inline-flex">
-            Falar no WhatsApp agora
-            <MessageCircle className="w-6 h-6" />
-          </a>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-white pt-20 pb-10 border-t border-gray-100">
-        <div className="container mx-auto px-6">
-          <div className="grid md:grid-cols-4 gap-12 mb-16">
-            <div className="col-span-2">
-              <div className="mb-6">
-                <Logo />
-              </div>
-              <p className="text-brand-gray max-w-sm leading-relaxed">
-                Solução moderna e eficiente em remoção de entulho para Curitiba e região metropolitana. Transformamos a logística da sua obra.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold mb-6 uppercase text-xs tracking-widest text-brand-yellow">Horário de Funcionamento</h4>
-              <ul className="text-sm text-brand-gray space-y-3">
-                <li>Segunda a Sexta: 08:00 às 17:00</li>
-                <li className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                  Plantão: Finais de semana e feriados
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold mb-6 uppercase text-xs tracking-widest text-brand-yellow">Localização</h4>
-              <ul className="text-sm text-brand-gray space-y-3">
-                <li>Curitiba - PR</li>
-                <li>Atendimento em toda a RMC</li>
-              </ul>
-            </div>
-          </div>
-          <div className="pt-10 border-t border-gray-50 flex flex-col md:flex-row items-center justify-between gap-6">
-            <p className="text-sm text-gray-400">
-              © {new Date().getFullYear()} CWB Entulhos. Todos os direitos reservados.
-            </p>
-            <div className="flex items-center gap-6">
-              <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer" className="text-brand-gray hover:text-brand-yellow transition-colors">
-                <MessageCircle className="w-5 h-5" />
-              </a>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Fixed WhatsApp Button */}
-      <motion.a 
-        href={WHATSAPP_LINK}
-        target="_blank"
-        rel="noopener noreferrer"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ scale: 1.1 }}
-        className="fixed bottom-8 right-8 z-[100] bg-[#25D366] text-white p-4 rounded-full shadow-2xl flex items-center justify-center group"
-      >
-        <MessageCircle className="w-8 h-8" />
-        <span className="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 font-bold whitespace-nowrap">
-          Falar com Especialista
-        </span>
-      </motion.a>
-    </div>
-  );
-}
+          <div className="
