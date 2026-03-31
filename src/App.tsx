@@ -5,6 +5,7 @@
 import { motion } from "motion/react";
 import { MessageCircle, Menu, X, Calculator } from "lucide-react";
 import { useState, useEffect } from "react";
+import OrderModal from "./OrderModal";
 
 const WHATSAPP_LINK =
   "https://wa.me/5541997015424?text=Ol%C3%A1%2C%20gostaria%20de%20um%20or%C3%A7amento%20para%20remo%C3%A7%C3%A3o%20de%20entulho%20em%20Curitiba.";
@@ -298,6 +299,7 @@ function PricingSimulator() {
   const [qtd, setQtd] = useState(1);
   const [dias, setDias] = useState(3);
   const [express, setExpress] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const BASE_PRICE: Record<number, number> = { 1: 100, 2: 180, 3: 240, 4: 280 };
   const basePriceFor = (q: number) => (q >= 5 ? q * 65 : BASE_PRICE[q]);
@@ -307,11 +309,6 @@ function PricingSimulator() {
   const extraDays = Math.max(0, dias - 3);
   const baseTotal = basePriceFor(qtd) + extraDays * dailyRateFor(qtd) * qtd;
   const total = baseTotal + (express ? EXPRESS_FEE : 0);
-
-  const wppMsg =
-    dias > 7
-      ? `Olá! Preciso de orçamento para ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dias (${express ? "Express" : "Convencional"}).`
-      : `Olá! Quero confirmar a locação de ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dia${dias > 1 ? "s" : ""} — ${express ? "Express (12h)" : "Convencional (24h)"}. Total estimado: ${fmt(total)}.`;
 
   return (
     <div className="grid md:grid-cols-2 gap-0 bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 max-w-3xl mx-auto">
@@ -408,7 +405,7 @@ function PricingSimulator() {
         </div>
       </div>
 
-      {/* RIGHT — SUMMARY (cálculo automático) */}
+      {/* RIGHT — SUMMARY */}
       <div className="bg-brand-dark p-8 flex flex-col gap-6 text-white">
         <div>
           <span className="text-xs font-bold uppercase tracking-widest text-brand-yellow">Resumo do pedido</span>
@@ -463,15 +460,29 @@ function PricingSimulator() {
           </div>
         )}
 
-        <a
-          href={`https://wa.me/5541997015424?text=${encodeURIComponent(wppMsg)}`}
-          target="_blank"
-          rel="noopener noreferrer"
+        {/* BOTÃO FAZER PEDIDO */}
+        <button
+          onClick={() => setShowModal(true)}
           className="mt-auto w-full bg-brand-yellow text-brand-dark py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-yellow-400 active:scale-[0.98] transition-all shadow-lg shadow-brand-yellow/20"
         >
           <MessageCircle size={16} />
-          Confirmar no WhatsApp →
-        </a>
+          Fazer Pedido →
+        </button>
+
+        {/* MODAL DE PEDIDO */}
+        {showModal && (
+          <OrderModal
+            order={{
+              qtd,
+              dias,
+              express,
+              total,
+              totalFmt: fmt(total),
+              servicoLabel: express ? "Express (até 12h)" : "Convencional (24h)",
+            }}
+            onClose={() => setShowModal(false)}
+          />
+        )}
       </div>
     </div>
   );
