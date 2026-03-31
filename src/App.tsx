@@ -292,15 +292,12 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 }
 
 // ===== PRICING SIMULATOR =====
-const EXPRESS_FEE = 30; // ← R$ 30,00 de acréscimo para entrega Express
+const EXPRESS_FEE = 30;
 
 function PricingSimulator() {
   const [qtd, setQtd] = useState(1);
   const [dias, setDias] = useState(3);
   const [express, setExpress] = useState(false);
-  const [showResult, setShowResult] = useState(false);
-  const [qtyError, setQtyError] = useState("");
-  const [daysError, setDaysError] = useState("");
 
   const BASE_PRICE: Record<number, number> = { 1: 100, 2: 180, 3: 240, 4: 280 };
   const basePriceFor = (q: number) => (q >= 5 ? q * 65 : BASE_PRICE[q]);
@@ -310,14 +307,6 @@ function PricingSimulator() {
   const extraDays = Math.max(0, dias - 3);
   const baseTotal = basePriceFor(qtd) + extraDays * dailyRateFor(qtd) * qtd;
   const total = baseTotal + (express ? EXPRESS_FEE : 0);
-
-  const validate = () => {
-    let ok = true;
-    setQtyError(""); setDaysError("");
-    if (qtd < 1 || qtd > 10) { setQtyError(qtd < 1 ? "Mínimo 1 tambor." : "Máximo 10 tambores."); ok = false; }
-    if (dias < 3) { setDaysError("O período mínimo é de 3 dias."); ok = false; }
-    return ok;
-  };
 
   const wppMsg =
     dias > 7
@@ -337,40 +326,54 @@ function PricingSimulator() {
         {/* QTD */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold uppercase tracking-widest text-gray-400">Quantidade de tambores</label>
-          <div className={`flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border-2 transition-colors ${qtyError ? "border-red-400" : "border-transparent"}`}>
-            <button onClick={() => { setQtd(Math.max(1, qtd - 1)); setShowResult(false); }} disabled={qtd <= 1} aria-label="Diminuir quantidade"
+          <div className="flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border-2 border-transparent">
+            <button
+              onClick={() => setQtd(Math.max(1, qtd - 1))}
+              disabled={qtd <= 1}
+              aria-label="Diminuir quantidade"
               className="w-10 h-10 rounded-xl border-2 border-gray-200 bg-white flex items-center justify-center text-xl font-black hover:border-brand-yellow hover:bg-brand-yellow hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >−</button>
             <div className="flex-1 text-center">
               <span className="text-xl font-black text-brand-dark">{qtd}</span>
               <span className="text-sm text-gray-400 ml-2">tambor{qtd > 1 ? "es" : ""}</span>
             </div>
-            <button onClick={() => { setQtd(Math.min(10, qtd + 1)); setShowResult(false); }} disabled={qtd >= 10} aria-label="Aumentar quantidade"
+            <button
+              onClick={() => setQtd(Math.min(10, qtd + 1))}
+              disabled={qtd >= 10}
+              aria-label="Aumentar quantidade"
               className="w-10 h-10 rounded-xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-xl font-black hover:bg-yellow-500 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >+</button>
           </div>
           <p className="text-xs text-gray-400">Mínimo 1 · Máximo 10 tambores</p>
-          {qtyError && <p className="text-xs text-red-500 font-medium">{qtyError}</p>}
         </div>
 
         {/* DIAS */}
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold uppercase tracking-widest text-gray-400">Período de permanência</label>
-          <div className={`flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border-2 transition-colors ${daysError ? "border-red-400" : "border-transparent"}`}>
-            <button onClick={() => { setDias(Math.max(3, dias - 1)); setShowResult(false); }} disabled={dias <= 3} aria-label="Diminuir dias"
+          <div className="flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border-2 border-transparent">
+            <button
+              onClick={() => setDias(Math.max(3, dias - 1))}
+              disabled={dias <= 3}
+              aria-label="Diminuir dias"
               className="w-10 h-10 rounded-xl border-2 border-gray-200 bg-white flex items-center justify-center text-xl font-black hover:border-brand-yellow hover:bg-brand-yellow hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >−</button>
             <div className="flex-1 text-center">
               <span className="text-xl font-black text-brand-dark">{dias}</span>
               <span className="text-sm text-gray-400 ml-2">dia{dias > 1 ? "s" : ""}</span>
-              {dias > 3 && <span className="text-xs text-brand-yellow ml-1 font-semibold">(+{dias - 3} extra{dias - 3 > 1 ? "s" : ""})</span>}
+              {dias > 3 && (
+                <span className="text-xs text-brand-yellow ml-1 font-semibold">
+                  (+{dias - 3} extra{dias - 3 > 1 ? "s" : ""})
+                </span>
+              )}
             </div>
-            <button onClick={() => { setDias(Math.min(7, dias + 1)); setShowResult(false); }} disabled={dias >= 7} aria-label="Aumentar dias"
+            <button
+              onClick={() => setDias(Math.min(7, dias + 1))}
+              disabled={dias >= 7}
+              aria-label="Aumentar dias"
               className="w-10 h-10 rounded-xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-xl font-black hover:bg-yellow-500 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >+</button>
           </div>
           <p className="text-xs text-gray-400">Mínimo 3 dias inclusos · Máximo 7 dias</p>
-          {daysError && <p className="text-xs text-red-500 font-medium">{daysError}</p>}
         </div>
 
         {/* SERVICE TYPE */}
@@ -383,11 +386,13 @@ function PricingSimulator() {
             ].map((opt) => (
               <button
                 key={opt.title}
-                onClick={() => { setExpress(opt.val); setShowResult(false); }}
+                onClick={() => setExpress(opt.val)}
                 role="radio"
                 aria-checked={express === opt.val}
                 className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                  express === opt.val ? "border-brand-yellow bg-amber-50" : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+                  express === opt.val
+                    ? "border-brand-yellow bg-amber-50"
+                    : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
                 }`}
               >
                 <span className="block font-bold text-sm text-brand-dark">{opt.title}</span>
@@ -401,22 +406,14 @@ function PricingSimulator() {
             ))}
           </div>
         </div>
-
-        <button
-          onClick={() => { if (validate()) setShowResult(true); }}
-          className="w-full bg-brand-dark text-white py-4 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-gray-800 active:scale-[0.98] transition-all shadow-lg"
-        >
-          <Calculator size={16} />
-          Calcular valor
-        </button>
       </div>
 
-      {/* RIGHT — SUMMARY */}
+      {/* RIGHT — SUMMARY (cálculo automático) */}
       <div className="bg-brand-dark p-8 flex flex-col gap-6 text-white">
         <div>
           <span className="text-xs font-bold uppercase tracking-widest text-brand-yellow">Resumo do pedido</span>
           <h3 className="font-display text-lg font-bold mt-1 text-white">
-            {showResult && dias > 7 ? "Consulta necessária" : showResult ? "Valor estimado" : "Configure seu pedido"}
+            {dias > 7 ? "Consulta necessária" : "Valor estimado"}
           </h3>
         </div>
 
@@ -427,10 +424,10 @@ function PricingSimulator() {
             { label: "Serviço",    val: express ? "Express (até 12h)" : "Convencional (24h)" },
             { label: "Quantidade", val: `${qtd} tambor${qtd > 1 ? "es" : ""}` },
             { label: "Período",    val: `${dias} dia${dias > 1 ? "s" : ""}` },
-            ...(showResult && extraDays > 0
+            ...(extraDays > 0
               ? [{ label: "Diárias extras", val: `${extraDays} × ${fmt(dailyRateFor(qtd))}/tambor` }]
               : []),
-            ...(showResult && express
+            ...(express
               ? [{ label: "Taxa Express", val: fmt(EXPRESS_FEE) }]
               : []),
           ].map((row) => (
@@ -445,9 +442,7 @@ function PricingSimulator() {
 
         <div className="h-px bg-white/10" />
 
-        {!showResult ? (
-          <p className="text-white/30 italic text-sm">Clique em calcular para ver o valor</p>
-        ) : dias > 7 ? (
+        {dias > 7 ? (
           <div className="bg-brand-yellow/10 border border-brand-yellow/25 rounded-2xl p-4 flex flex-col gap-2">
             <span className="text-sm font-bold text-brand-yellow">⚡ Período especial</span>
             <span className="text-xs text-white/65 leading-relaxed">
@@ -460,7 +455,9 @@ function PricingSimulator() {
             <span className="font-display text-4xl font-black text-brand-yellow leading-none">{fmt(total)}</span>
             <span className="text-xs text-white/40 mt-1">
               {`Base ${fmt(basePriceFor(qtd))}`}
-              {extraDays > 0 ? ` + ${extraDays} diária${extraDays > 1 ? "s" : ""} extra${extraDays > 1 ? "s" : ""} (${fmt(extraDays * dailyRateFor(qtd) * qtd)})` : ""}
+              {extraDays > 0
+                ? ` + ${extraDays} diária${extraDays > 1 ? "s" : ""} extra${extraDays > 1 ? "s" : ""} (${fmt(extraDays * dailyRateFor(qtd) * qtd)})`
+                : ""}
               {express ? ` + ${fmt(EXPRESS_FEE)} taxa Express` : ""}
             </span>
           </div>
