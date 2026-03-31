@@ -3,12 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 import { motion } from "motion/react";
-import {
-  MessageCircle,
-  Menu,
-  X,
-  Calculator,
-} from "lucide-react";
+import { MessageCircle, Menu, X, Calculator } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const WHATSAPP_LINK =
@@ -41,15 +36,11 @@ export default function App() {
       {/* ===== NAVBAR ===== */}
       <nav
         className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
-  scrolled
-    ? "bg-white shadow-md py-3"
-    : "bg-brand-dark/95 backdrop-blur-sm border-b border-white/10 py-4"
-}`}
+          scrolled ? "bg-white shadow-md py-3" : "bg-brand-dark py-4"
+        }`}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
           <Logo />
-
-          {/* Desktop links */}
           <div className="hidden lg:flex items-center gap-8">
             {[
               { label: "Serviços",      href: "#serviços" },
@@ -76,8 +67,6 @@ export default function App() {
               Orçamento Rápido
             </a>
           </div>
-
-          {/* Hamburger */}
           <button
             className={`lg:hidden transition-colors ${scrolled ? "text-brand-dark" : "text-white"}`}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -87,7 +76,6 @@ export default function App() {
           </button>
         </div>
 
-        {/* Mobile menu */}
         {isMenuOpen && (
           <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl">
             <div className="flex flex-col px-6 py-4 gap-4">
@@ -111,7 +99,7 @@ export default function App() {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={handleNavClick}
-                className="bg-brand-yellow text-brand-dark text-center px-6 py-4 rounded-xl font-black text-base mt-2 hover:bg-brand-yellow/90 transition-all"
+                className="bg-brand-yellow text-brand-dark text-center px-6 py-4 rounded-xl font-black text-base mt-2"
               >
                 Orçamento Rápido
               </a>
@@ -240,6 +228,10 @@ export default function App() {
                 q: "O descarte é legalizado?",
                 a: "Sim. Todo entulho é descartado em locais licenciados pela Prefeitura de Curitiba, em conformidade com a legislação ambiental vigente.",
               },
+              {
+                q: "O que é o serviço Express?",
+                a: "O Express garante entrega em até 12 horas após confirmação do pedido, com acréscimo de R$ 30,00 calculado automaticamente no simulador.",
+              },
             ].map((item, index) => (
               <FaqItem key={index} question={item.q} answer={item.a} />
             ))}
@@ -288,9 +280,7 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
         aria-expanded={open}
       >
         <span>{question}</span>
-        <span className={`ml-4 flex-shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}>
-          ▾
-        </span>
+        <span className={`ml-4 flex-shrink-0 transition-transform duration-300 ${open ? "rotate-180" : ""}`}>▾</span>
       </button>
       {open && (
         <div className="px-6 pb-5 text-gray-600 text-sm leading-relaxed border-t border-gray-100">
@@ -302,6 +292,8 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 }
 
 // ===== PRICING SIMULATOR =====
+const EXPRESS_FEE = 30; // ← R$ 30,00 de acréscimo para entrega Express
+
 function PricingSimulator() {
   const [qtd, setQtd] = useState(1);
   const [dias, setDias] = useState(3);
@@ -316,12 +308,12 @@ function PricingSimulator() {
   const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
   const extraDays = Math.max(0, dias - 3);
-  const total = basePriceFor(qtd) + extraDays * dailyRateFor(qtd) * qtd;
+  const baseTotal = basePriceFor(qtd) + extraDays * dailyRateFor(qtd) * qtd;
+  const total = baseTotal + (express ? EXPRESS_FEE : 0);
 
   const validate = () => {
     let ok = true;
-    setQtyError("");
-    setDaysError("");
+    setQtyError(""); setDaysError("");
     if (qtd < 1 || qtd > 10) { setQtyError(qtd < 1 ? "Mínimo 1 tambor." : "Máximo 10 tambores."); ok = false; }
     if (dias < 3) { setDaysError("O período mínimo é de 3 dias."); ok = false; }
     return ok;
@@ -330,7 +322,7 @@ function PricingSimulator() {
   const wppMsg =
     dias > 7
       ? `Olá! Preciso de orçamento para ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dias (${express ? "Express" : "Convencional"}).`
-      : `Olá! Quero confirmar a locação de ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dia${dias > 1 ? "s" : ""} — ${express ? "Express (8h)" : "Convencional (24h)"}. Total estimado: ${fmt(total)}.`;
+      : `Olá! Quero confirmar a locação de ${qtd} tambor${qtd > 1 ? "es" : ""} por ${dias} dia${dias > 1 ? "s" : ""} — ${express ? "Express (12h)" : "Convencional (24h)"}. Total estimado: ${fmt(total)}.`;
 
   return (
     <div className="grid md:grid-cols-2 gap-0 bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 max-w-3xl mx-auto">
@@ -346,20 +338,14 @@ function PricingSimulator() {
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold uppercase tracking-widest text-gray-400">Quantidade de tambores</label>
           <div className={`flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border-2 transition-colors ${qtyError ? "border-red-400" : "border-transparent"}`}>
-            <button
-              onClick={() => { setQtd(Math.max(1, qtd - 1)); setShowResult(false); }}
-              disabled={qtd <= 1}
-              aria-label="Diminuir quantidade"
+            <button onClick={() => { setQtd(Math.max(1, qtd - 1)); setShowResult(false); }} disabled={qtd <= 1} aria-label="Diminuir quantidade"
               className="w-10 h-10 rounded-xl border-2 border-gray-200 bg-white flex items-center justify-center text-xl font-black hover:border-brand-yellow hover:bg-brand-yellow hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >−</button>
             <div className="flex-1 text-center">
               <span className="text-xl font-black text-brand-dark">{qtd}</span>
               <span className="text-sm text-gray-400 ml-2">tambor{qtd > 1 ? "es" : ""}</span>
             </div>
-            <button
-              onClick={() => { setQtd(Math.min(10, qtd + 1)); setShowResult(false); }}
-              disabled={qtd >= 10}
-              aria-label="Aumentar quantidade"
+            <button onClick={() => { setQtd(Math.min(10, qtd + 1)); setShowResult(false); }} disabled={qtd >= 10} aria-label="Aumentar quantidade"
               className="w-10 h-10 rounded-xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-xl font-black hover:bg-yellow-500 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >+</button>
           </div>
@@ -371,25 +357,15 @@ function PricingSimulator() {
         <div className="flex flex-col gap-2">
           <label className="text-xs font-semibold uppercase tracking-widest text-gray-400">Período de permanência</label>
           <div className={`flex items-center gap-3 bg-gray-50 rounded-2xl px-4 py-3 border-2 transition-colors ${daysError ? "border-red-400" : "border-transparent"}`}>
-            <button
-              onClick={() => { setDias(Math.max(3, dias - 1)); setShowResult(false); }}
-              disabled={dias <= 3}
-              aria-label="Diminuir dias"
+            <button onClick={() => { setDias(Math.max(3, dias - 1)); setShowResult(false); }} disabled={dias <= 3} aria-label="Diminuir dias"
               className="w-10 h-10 rounded-xl border-2 border-gray-200 bg-white flex items-center justify-center text-xl font-black hover:border-brand-yellow hover:bg-brand-yellow hover:text-white transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >−</button>
             <div className="flex-1 text-center">
               <span className="text-xl font-black text-brand-dark">{dias}</span>
               <span className="text-sm text-gray-400 ml-2">dia{dias > 1 ? "s" : ""}</span>
-              {dias > 3 && (
-                <span className="text-xs text-brand-yellow ml-1 font-semibold">
-                  (+{dias - 3} extra{dias - 3 > 1 ? "s" : ""})
-                </span>
-              )}
+              {dias > 3 && <span className="text-xs text-brand-yellow ml-1 font-semibold">(+{dias - 3} extra{dias - 3 > 1 ? "s" : ""})</span>}
             </div>
-            <button
-              onClick={() => { setDias(Math.min(7, dias + 1)); setShowResult(false); }}
-              disabled={dias >= 7}
-              aria-label="Aumentar dias"
+            <button onClick={() => { setDias(Math.min(7, dias + 1)); setShowResult(false); }} disabled={dias >= 7} aria-label="Aumentar dias"
               className="w-10 h-10 rounded-xl border-2 border-brand-yellow bg-brand-yellow flex items-center justify-center text-xl font-black hover:bg-yellow-500 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
             >+</button>
           </div>
@@ -402,18 +378,16 @@ function PricingSimulator() {
           <span className="text-xs font-semibold uppercase tracking-widest text-gray-400">Tipo de serviço</span>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { val: false, title: "Convencional", sub: "Entrega em até 24h" },
-              { val: true,  title: "Express",      sub: "Entrega em até 8h", badge: "Rápido" },
+              { val: false, title: "Convencional", sub: "Entrega em até 24h", badge: null },
+              { val: true,  title: "Express",      sub: "Entrega em até 12h", badge: "+ R$ 30,00" },
             ].map((opt) => (
               <button
                 key={opt.title}
-                onClick={() => setExpress(opt.val)}
+                onClick={() => { setExpress(opt.val); setShowResult(false); }}
                 role="radio"
                 aria-checked={express === opt.val}
                 className={`p-4 rounded-2xl border-2 text-left transition-all ${
-                  express === opt.val
-                    ? "border-brand-yellow bg-amber-50"
-                    : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
+                  express === opt.val ? "border-brand-yellow bg-amber-50" : "border-gray-100 hover:border-gray-200 hover:bg-gray-50"
                 }`}
               >
                 <span className="block font-bold text-sm text-brand-dark">{opt.title}</span>
@@ -450,16 +424,21 @@ function PricingSimulator() {
 
         <div className="flex flex-col gap-3">
           {[
-            { label: "Serviço",    val: express ? "Express (até 8h)" : "Convencional (24h)" },
+            { label: "Serviço",    val: express ? "Express (até 12h)" : "Convencional (24h)" },
             { label: "Quantidade", val: `${qtd} tambor${qtd > 1 ? "es" : ""}` },
             { label: "Período",    val: `${dias} dia${dias > 1 ? "s" : ""}` },
             ...(showResult && extraDays > 0
               ? [{ label: "Diárias extras", val: `${extraDays} × ${fmt(dailyRateFor(qtd))}/tambor` }]
               : []),
+            ...(showResult && express
+              ? [{ label: "Taxa Express", val: fmt(EXPRESS_FEE) }]
+              : []),
           ].map((row) => (
             <div key={row.label} className="flex justify-between items-baseline gap-2">
               <span className="text-[11px] font-semibold uppercase tracking-wider text-white/50">{row.label}</span>
-              <span className="text-sm font-semibold text-white/90">{row.val}</span>
+              <span className={`text-sm font-semibold ${row.label === "Taxa Express" ? "text-brand-yellow" : "text-white/90"}`}>
+                {row.val}
+              </span>
             </div>
           ))}
         </div>
@@ -472,7 +451,7 @@ function PricingSimulator() {
           <div className="bg-brand-yellow/10 border border-brand-yellow/25 rounded-2xl p-4 flex flex-col gap-2">
             <span className="text-sm font-bold text-brand-yellow">⚡ Período especial</span>
             <span className="text-xs text-white/65 leading-relaxed">
-              Para períodos acima de 7 dias, entre em contato com nossa equipe para um orçamento personalizado.
+              Para períodos acima de 7 dias, entre em contato para um orçamento personalizado.
             </span>
           </div>
         ) : (
@@ -480,9 +459,9 @@ function PricingSimulator() {
             <span className="text-xs text-white/50">Total estimado</span>
             <span className="font-display text-4xl font-black text-brand-yellow leading-none">{fmt(total)}</span>
             <span className="text-xs text-white/40 mt-1">
-              {extraDays > 0
-                ? `Base ${fmt(basePriceFor(qtd))} + ${extraDays} diária${extraDays > 1 ? "s" : ""} extra${extraDays > 1 ? "s" : ""} (${fmt(extraDays * dailyRateFor(qtd) * qtd)})`
-                : "Período base de 3 dias inclusos"}
+              {`Base ${fmt(basePriceFor(qtd))}`}
+              {extraDays > 0 ? ` + ${extraDays} diária${extraDays > 1 ? "s" : ""} extra${extraDays > 1 ? "s" : ""} (${fmt(extraDays * dailyRateFor(qtd) * qtd)})` : ""}
+              {express ? ` + ${fmt(EXPRESS_FEE)} taxa Express` : ""}
             </span>
           </div>
         )}
