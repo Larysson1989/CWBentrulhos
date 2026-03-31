@@ -41,10 +41,10 @@ export default function App() {
       {/* ===== NAVBAR ===== */}
       <nav
         className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
-          scrolled
-            ? "bg-white shadow-md py-3"
-            : "bg-brand-dark py-4"
-        }`}
+  scrolled
+    ? "bg-white shadow-md py-3"
+    : "bg-brand-dark/95 backdrop-blur-sm border-b border-white/10 py-4"
+}`}
       >
         <div className="container mx-auto px-6 flex items-center justify-between">
           <Logo />
