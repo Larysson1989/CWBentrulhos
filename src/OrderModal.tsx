@@ -203,7 +203,7 @@ export default function OrderModal({ order, onClose }: Props) {
 
       {/* ── OVERLAY: CONCLUÍDO ── */}
       {step === "done" && (
-        <div className="relative z-10 bg-white rounded-3xl p-10 flex flex-col items-center gap-6 text-center max-w-sm w-full shadow-2xl">
+        <div className="relative z-10 bg-white rounded-3xl p-10 flex flex-col items-center gap-6 text-center max-w-sm w-full shadow-2xl text-gray-900">
           <CheckCircle2 className="w-16 h-16 text-green-500" />
           <div>
             <h3 className="text-2xl font-black text-brand-dark mb-1">Pedido enviado!</h3>
@@ -231,7 +231,7 @@ export default function OrderModal({ order, onClose }: Props) {
 
       {/* ── FORMULÁRIO PRINCIPAL ── */}
       {step === "form" && (
-        <div className="relative z-10 bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="relative z-10 bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto text-gray-900">
 
           {/* Header fixo */}
           <div className="sticky top-0 bg-white border-b border-gray-100 px-8 py-5 flex items-center justify-between z-10">
@@ -258,7 +258,7 @@ export default function OrderModal({ order, onClose }: Props) {
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                   placeholder="Ex: João da Silva"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-yellow transition-colors"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-white focus:outline-none focus:border-brand-yellow transition-colors"
                 />
               </div>
             </section>
@@ -270,6 +270,7 @@ export default function OrderModal({ order, onClose }: Props) {
                 <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500">Endereço de cobrança</h3>
               </div>
               <div className="grid grid-cols-2 gap-3">
+
                 <div>
                   <label className="text-xs font-semibold text-gray-500 mb-1 block">CEP *</label>
                   <div className="relative">
@@ -283,7 +284,7 @@ export default function OrderModal({ order, onClose }: Props) {
                       }}
                       placeholder="00000-000"
                       maxLength={9}
-                      className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-yellow transition-colors ${
+                      className={`w-full border rounded-xl px-4 py-3 text-sm text-gray-900 bg-white focus:outline-none focus:border-brand-yellow transition-colors ${
                         cepError ? "border-red-400" : "border-gray-200"
                       }`}
                     />
@@ -300,7 +301,7 @@ export default function OrderModal({ order, onClose }: Props) {
                     value={numero}
                     onChange={(e) => setNumero(e.target.value)}
                     placeholder="Ex: 123"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-yellow transition-colors"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-white focus:outline-none focus:border-brand-yellow transition-colors"
                   />
                 </div>
 
@@ -333,6 +334,7 @@ export default function OrderModal({ order, onClose }: Props) {
                     className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-500"
                   />
                 </div>
+
               </div>
             </section>
 
@@ -365,6 +367,7 @@ export default function OrderModal({ order, onClose }: Props) {
 
               {!mesmoEnd && (
                 <div className="grid grid-cols-2 gap-3">
+
                   <div>
                     <label className="text-xs font-semibold text-gray-500 mb-1 block">CEP de entrega *</label>
                     <div className="relative">
@@ -378,7 +381,7 @@ export default function OrderModal({ order, onClose }: Props) {
                         }}
                         placeholder="00000-000"
                         maxLength={9}
-                        className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-yellow transition-colors ${
+                        className={`w-full border rounded-xl px-4 py-3 text-sm text-gray-900 bg-white focus:outline-none focus:border-brand-yellow transition-colors ${
                           entCepError ? "border-red-400" : "border-gray-200"
                         }`}
                       />
@@ -395,7 +398,7 @@ export default function OrderModal({ order, onClose }: Props) {
                       value={entNumero}
                       onChange={(e) => setEntNumero(e.target.value)}
                       placeholder="Ex: 456"
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-yellow transition-colors"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-white focus:outline-none focus:border-brand-yellow transition-colors"
                     />
                   </div>
 
@@ -428,6 +431,7 @@ export default function OrderModal({ order, onClose }: Props) {
                       className="w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-500"
                     />
                   </div>
+
                 </div>
               )}
             </section>
