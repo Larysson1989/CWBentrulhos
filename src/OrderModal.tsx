@@ -27,6 +27,7 @@ interface Props {
 }
 
 // ─── Constantes ──────────────────────────────────────────────────────────────
+// CONTATO ATUALIZADO: WhatsApp 41 99701-5424 → telefone fixo 41 3798-5108
 const OWNER_WHATSAPP = "5541997015424";
 const HORA_ABERTURA = 8;
 const HORA_FECHAMENTO = 17;
@@ -91,7 +92,6 @@ function calcPrevisao(express: boolean): { data: Date; label: string; minDate: s
   const nomes = ["domingo", "segunda-feira", "terça-feira", "quarta-feira", "quinta-feira", "sexta-feira", "sábado"];
   const label = `${nomes[cur.getDay()]}, ${cur.toLocaleDateString("pt-BR")} às ${String(cur.getHours()).padStart(2, "0")}h`;
 
-  // minDate = apenas a data (sem hora) para o input[type=date]
   const yyyy = cur.getFullYear();
   const mm = String(cur.getMonth() + 1).padStart(2, "0");
   const dd = String(cur.getDate()).padStart(2, "0");
@@ -104,19 +104,16 @@ function calcPrevisao(express: boolean): { data: Date; label: string; minDate: s
 export default function OrderModal({ order, onClose }: Props) {
   const [step, setStep] = useState<"form" | "processing" | "done">("form");
 
-  // Dados pessoais
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [descricao, setDescricao] = useState("");
 
-  // Endereço de cobrança
   const [cep, setCep] = useState("");
   const [addr, setAddr] = useState<Address>({ logradouro: "", bairro: "", cidade: "", uf: "" });
   const [numero, setNumero] = useState("");
   const [cepLoading, setCepLoading] = useState(false);
   const [cepError, setCepError] = useState("");
 
-  // Endereço de entrega
   const [mesmoEnd, setMesmoEnd] = useState(true);
   const [entCep, setEntCep] = useState("");
   const [entAddr, setEntAddr] = useState<Address>({ logradouro: "", bairro: "", cidade: "", uf: "" });
@@ -124,22 +121,18 @@ export default function OrderModal({ order, onClose }: Props) {
   const [entCepLoading, setEntCepLoading] = useState(false);
   const [entCepError, setEntCepError] = useState("");
 
-  // Entrega agendada — previsão calculada uma vez na montagem do componente
   const previsao = calcPrevisao(order.express);
   const [dataEntrega, setDataEntrega] = useState(previsao.minDate);
   const [periodo, setPeriodo] = useState<"manha" | "tarde">("manha");
 
-  // OS gerada
   const [osCode, setOsCode] = useState("");
 
-  // ── CSS helpers ───────────────────────────────────────────────────────────
   const inputCls =
     "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-white focus:outline-none focus:border-brand-yellow transition-colors";
   const readonlyCls =
     "w-full border border-gray-100 bg-gray-50 rounded-xl px-4 py-3 text-sm text-gray-500";
   const labelCls = "text-xs font-semibold text-gray-500 mb-1 block";
 
-  // ── Busca CEP ─────────────────────────────────────────────────────────────
   async function fetchCep(value: string, isEntrega = false) {
     const clean = value.replace(/\D/g, "");
     if (clean.length !== 8) return;
@@ -166,7 +159,6 @@ export default function OrderModal({ order, onClose }: Props) {
     }
   }
 
-  // ── Validação ─────────────────────────────────────────────────────────────
   function isFormValid() {
     if (!nome.trim()) return false;
     if (telefone.replace(/\D/g, "").length < 10) return false;
@@ -182,7 +174,6 @@ export default function OrderModal({ order, onClose }: Props) {
     return true;
   }
 
-  // ── Confirmar pedido ──────────────────────────────────────────────────────
   async function handleConfirm() {
     if (!isFormValid()) return;
     const os = generateOS();
@@ -220,7 +211,6 @@ export default function OrderModal({ order, onClose }: Props) {
     setStep("done");
   }
 
-  // ── Impressão OS ──────────────────────────────────────────────────────────
   function handlePrint() {
     const periodoLabel = periodo === "manha" ? "Manhã (08h–12h)" : "Tarde (13h–17h)";
     const entEndStr = mesmoEnd
@@ -262,7 +252,7 @@ export default function OrderModal({ order, onClose }: Props) {
           <tr class="total-row"><td>Total estimado</td><td class="total-val">${order.totalFmt}</td></tr>
         </table>
         ${descricao.trim() ? `<div class="obs"><strong>Observações:</strong><br/>${descricao.trim()}</div>` : ""}
-        <footer>Documento gerado em ${new Date().toLocaleString("pt-BR")} · CWB Entulhos · (41) 99701-5424</footer>
+        <footer>Documento gerado em ${new Date().toLocaleString("pt-BR")} · CWB Entulhos · (41) 3798-5108</footer>
       </body>
       </html>
     `;
@@ -270,7 +260,6 @@ export default function OrderModal({ order, onClose }: Props) {
     if (win) { win.document.write(printContent); win.document.close(); win.print(); }
   }
 
-  // ─────────────────────────────────────────────────────────────────────────
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
       <div
@@ -278,7 +267,6 @@ export default function OrderModal({ order, onClose }: Props) {
         onClick={step === "form" ? onClose : undefined}
       />
 
-      {/* ── PROCESSANDO ── */}
       {step === "processing" && (
         <div className="relative z-10 bg-brand-dark rounded-3xl p-12 flex flex-col items-center gap-6 text-white text-center max-w-sm w-full shadow-2xl">
           <Loader2 className="w-16 h-16 text-brand-yellow animate-spin" />
@@ -289,7 +277,6 @@ export default function OrderModal({ order, onClose }: Props) {
         </div>
       )}
 
-      {/* ── CONCLUÍDO ── */}
       {step === "done" && (
         <div className="relative z-10 bg-white rounded-3xl p-10 flex flex-col items-center gap-6 text-center max-w-sm w-full shadow-2xl text-gray-900">
           <CheckCircle2 className="w-16 h-16 text-green-500" />
@@ -317,24 +304,22 @@ export default function OrderModal({ order, onClose }: Props) {
         </div>
       )}
 
-      {/* ── FORMULÁRIO ── */}
       {step === "form" && (
         <div className="relative z-10 bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto text-gray-900">
 
-          {/* Header fixo */}
           <div className="sticky top-0 bg-white border-b border-gray-100 px-8 py-5 flex items-center justify-between z-10">
             <div>
               <h2 className="font-display text-xl font-black text-brand-dark">Fazer Pedido</h2>
               <p className="text-xs text-gray-400 mt-0.5">Preencha os dados para finalizar sua locação</p>
             </div>
-            <button onClick={onClose} className="text-gray-400 hover:text-brand-dark transition-colors p-2">
+            <button onClick={onClose} className="text-gray-400 hover:text-brand-dark transition-colors p-2" aria-label="Fechar">
               <X className="w-5 h-5" />
             </button>
           </div>
 
           <div className="px-8 py-6 flex flex-col gap-8">
 
-            {/* ── DADOS PESSOAIS ── */}
+            {/* DADOS PESSOAIS */}
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <User className="w-4 h-4 text-brand-yellow" />
@@ -348,6 +333,7 @@ export default function OrderModal({ order, onClose }: Props) {
                     onChange={(e) => setNome(e.target.value)}
                     placeholder="Ex: João da Silva"
                     className={inputCls}
+                    autoComplete="name"
                   />
                 </div>
                 <div className="col-span-2">
@@ -362,12 +348,14 @@ export default function OrderModal({ order, onClose }: Props) {
                     placeholder="(41) 99999-9999"
                     maxLength={15}
                     className={inputCls}
+                    autoComplete="tel"
+                    inputMode="tel"
                   />
                 </div>
               </div>
             </section>
 
-            {/* ── ENDEREÇO DE COBRANÇA ── */}
+            {/* ENDEREÇO DE COBRANÇA */}
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="w-4 h-4 text-brand-yellow" />
@@ -387,6 +375,7 @@ export default function OrderModal({ order, onClose }: Props) {
                       placeholder="00000-000"
                       maxLength={9}
                       className={`${inputCls} ${cepError ? "border-red-400" : ""}`}
+                      inputMode="numeric"
                     />
                     {cepLoading && (
                       <Loader2 className="absolute right-3 top-3.5 w-4 h-4 animate-spin text-gray-400" />
@@ -401,6 +390,7 @@ export default function OrderModal({ order, onClose }: Props) {
                     onChange={(e) => setNumero(e.target.value)}
                     placeholder="Ex: 123"
                     className={inputCls}
+                    inputMode="numeric"
                   />
                 </div>
                 <div className="col-span-2">
@@ -418,7 +408,7 @@ export default function OrderModal({ order, onClose }: Props) {
               </div>
             </section>
 
-            {/* ── LOCAL DE ENTREGA ── */}
+            {/* LOCAL DE ENTREGA */}
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <Package className="w-4 h-4 text-brand-yellow" />
@@ -429,6 +419,10 @@ export default function OrderModal({ order, onClose }: Props) {
                 className={`flex items-center gap-3 cursor-pointer p-4 rounded-xl border-2 transition-all mb-4 ${
                   mesmoEnd ? "border-brand-yellow bg-amber-50" : "border-gray-200 hover:border-gray-300"
                 }`}
+                role="checkbox"
+                aria-checked={mesmoEnd}
+                tabIndex={0}
+                onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") setMesmoEnd(!mesmoEnd); }}
               >
                 <div className={`w-5 h-5 rounded flex items-center justify-center border-2 flex-shrink-0 transition-colors ${
                   mesmoEnd ? "bg-brand-yellow border-brand-yellow" : "border-gray-300"
@@ -453,6 +447,7 @@ export default function OrderModal({ order, onClose }: Props) {
                         placeholder="00000-000"
                         maxLength={9}
                         className={`${inputCls} ${entCepError ? "border-red-400" : ""}`}
+                        inputMode="numeric"
                       />
                       {entCepLoading && (
                         <Loader2 className="absolute right-3 top-3.5 w-4 h-4 animate-spin text-gray-400" />
@@ -462,7 +457,7 @@ export default function OrderModal({ order, onClose }: Props) {
                   </div>
                   <div>
                     <label className={labelCls}>Número *</label>
-                    <input value={entNumero} onChange={(e) => setEntNumero(e.target.value)} placeholder="Ex: 456" className={inputCls} />
+                    <input value={entNumero} onChange={(e) => setEntNumero(e.target.value)} placeholder="Ex: 456" className={inputCls} inputMode="numeric" />
                   </div>
                   <div className="col-span-2">
                     <label className={labelCls}>Logradouro</label>
@@ -480,14 +475,13 @@ export default function OrderModal({ order, onClose }: Props) {
               )}
             </section>
 
-            {/* ── AGENDAMENTO DE ENTREGA ── */}
+            {/* AGENDAMENTO */}
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <Calendar className="w-4 h-4 text-brand-yellow" />
                 <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500">Agendamento de entrega</h3>
               </div>
 
-              {/* Banner de prazo mínimo */}
               <div className="bg-amber-50 border border-brand-yellow/40 rounded-xl px-4 py-3 mb-4">
                 <div className="flex items-start gap-3">
                   <Clock className="w-4 h-4 text-brand-yellow flex-shrink-0 mt-0.5" />
@@ -504,7 +498,6 @@ export default function OrderModal({ order, onClose }: Props) {
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                {/* Data desejada — mínimo = prazo calculado, sem limite máximo */}
                 <div>
                   <label className={labelCls}>
                     Data de entrega *
@@ -517,26 +510,19 @@ export default function OrderModal({ order, onClose }: Props) {
                     value={dataEntrega}
                     min={previsao.minDate}
                     onChange={(e) => {
-                      // Guard extra: nunca permite data anterior ao prazo mínimo
                       if (e.target.value < previsao.minDate) return;
                       setDataEntrega(e.target.value);
                     }}
                     className={inputCls}
                   />
-                  {/* Feedback visual */}
                   {dataEntrega === previsao.minDate && (
-                    <p className="text-[11px] text-amber-600 mt-1 font-medium">
-                      ✓ Primeira data disponível selecionada
-                    </p>
+                    <p className="text-[11px] text-amber-600 mt-1 font-medium">✓ Primeira data disponível</p>
                   )}
                   {dataEntrega > previsao.minDate && (
-                    <p className="text-[11px] text-green-600 mt-1 font-medium">
-                      ✓ Agendado para após o prazo mínimo
-                    </p>
+                    <p className="text-[11px] text-green-600 mt-1 font-medium">✓ Agendado após o prazo mínimo</p>
                   )}
                 </div>
 
-                {/* Período manhã / tarde */}
                 <div>
                   <label className={labelCls}>Período *</label>
                   <div className="grid grid-cols-2 gap-2">
@@ -548,6 +534,7 @@ export default function OrderModal({ order, onClose }: Props) {
                         key={opt.val}
                         type="button"
                         onClick={() => setPeriodo(opt.val)}
+                        aria-pressed={periodo === opt.val}
                         className={`p-3 rounded-xl border-2 text-left transition-all ${
                           periodo === opt.val
                             ? "border-brand-yellow bg-amber-50"
@@ -563,7 +550,7 @@ export default function OrderModal({ order, onClose }: Props) {
               </div>
             </section>
 
-            {/* ── OBSERVAÇÕES ── */}
+            {/* OBSERVAÇÕES */}
             <section>
               <div className="flex items-center gap-2 mb-4">
                 <FileText className="w-4 h-4 text-brand-yellow" />
@@ -579,7 +566,7 @@ export default function OrderModal({ order, onClose }: Props) {
               <p className="text-xs text-gray-400 mt-1">{descricao.length}/300 caracteres</p>
             </section>
 
-            {/* ── RESUMO DO PEDIDO ── */}
+            {/* RESUMO */}
             <section className="bg-brand-dark rounded-2xl p-6 text-white">
               <span className="text-xs font-bold uppercase tracking-widest text-brand-yellow">Resumo do pedido</span>
               <div className="mt-4 flex flex-col gap-2">
@@ -607,7 +594,6 @@ export default function OrderModal({ order, onClose }: Props) {
               </div>
             </section>
 
-            {/* ── BOTÃO CONFIRMAR ── */}
             <button
               onClick={handleConfirm}
               disabled={!isFormValid()}
