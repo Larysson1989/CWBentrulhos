@@ -27,8 +27,8 @@ interface Props {
 }
 
 // ─── Constantes ──────────────────────────────────────────────────────────────
-// CONTATO ATUALIZADO: WhatsApp 41 99701-5424 → telefone fixo 41 3798-5108
-const OWNER_WHATSAPP = "5541997015424";
+// Contato: apenas WhatsApp (41) 3798-5108
+const OWNER_WHATSAPP = "554137985108";
 const HORA_ABERTURA = 8;
 const HORA_FECHAMENTO = 17;
 
@@ -252,7 +252,7 @@ export default function OrderModal({ order, onClose }: Props) {
           <tr class="total-row"><td>Total estimado</td><td class="total-val">${order.totalFmt}</td></tr>
         </table>
         ${descricao.trim() ? `<div class="obs"><strong>Observações:</strong><br/>${descricao.trim()}</div>` : ""}
-        <footer>Documento gerado em ${new Date().toLocaleString("pt-BR")} · CWB Entulhos · (41) 3798-5108</footer>
+        <footer>Documento gerado em ${new Date().toLocaleString("pt-BR")} · CWB Entulhos · WhatsApp (41) 3798-5108</footer>
       </body>
       </html>
     `;
