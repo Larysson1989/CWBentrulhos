@@ -1,20 +1,27 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# CWB Entulhos
 
-# Run and deploy your AI Studio app
+Landing page de locação de tambores para entulho em Curitiba (React + Vite + Tailwind).
 
-This contains everything you need to run your app locally.
+## Rodar localmente
 
-View your app in AI Studio: https://ai.studio/apps/d9e0cc62-3406-49fe-8b0f-b95cb490ff08
+**Pré-requisito:** Node.js
 
-## Run Locally
+```
+npm install
+npm run dev
+```
 
-**Prerequisites:**  Node.js
+Abre em `http://localhost:3000`.
 
+## Build de produção
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+```
+npm run build
+npm run preview
+```
+
+## Estrutura
+
+- `src/App.tsx` — página inteira (navbar, hero, serviços, simulador de preços, depoimentos, cobertura, FAQ, footer)
+- `src/OrderModal.tsx` — modal de pedido (busca CEP via ViaCEP, gera OS, envia para WhatsApp)
+- `public/images/` — logo e foto do hero

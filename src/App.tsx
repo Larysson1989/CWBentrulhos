@@ -736,12 +736,13 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 
 // ─── PRICING SIMULATOR — REFORMULADO ─────────────────────────────────────────
 // Regras: locação fixa até 5 dias · sem cobrança de diária extra
-// Preço varia apenas pela quantidade de tambores
+// 1 tambor: R$100 + R$40 de entrega avulsa. 2 a 5 tambores: entrega grátis,
+// preço por tambor decrescente. Acima de 5: sob consulta.
 // 1 tambor 200L ≈ 5 carrinhos de mão cheios
 
-const PRICES: Record<number, number> = { 1: 100, 2: 180, 3: 240, 4: 280, 5: 320 };
-function precoParaQtd(q: number): number {
-  return q <= 5 ? (PRICES[q] ?? q * 60) : q * 60;
+const PRICES: Record<number, number> = { 1: 140, 2: 200, 3: 270, 4: 320, 5: 350 };
+function precoParaQtd(q: number): number | null {
+  return q <= 5 ? PRICES[q] : null;
 }
 
 function PricingSimulator() {
@@ -752,6 +753,10 @@ function PricingSimulator() {
   const fmt = (v: number) => v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
   const carrinhos = qtd * 5;
   const tabelaRefs = [1, 2, 3, 4, 5];
+  const entregaLabel = qtd === 1 ? "R$ 40,00 (tambor avulso)" : qtd <= 5 ? "Grátis" : "Sob consulta";
+  const consultaLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+    `Olá, gostaria de um orçamento para locação de ${qtd} tambores em Curitiba.`
+  )}`;
 
   return (
     <div className="grid md:grid-cols-2 gap-0 bg-white rounded-3xl overflow-hidden shadow-2xl border border-gray-100 max-w-3xl mx-auto">
@@ -836,11 +841,11 @@ function PricingSimulator() {
                 }`}
               >
                 <span className="block text-sm font-black">{n}×</span>
-                <span className="block text-[10px] opacity-70 mt-0.5">{fmt(precoParaQtd(n))}</span>
+                <span className="block text-[10px] opacity-70 mt-0.5">{fmt(PRICES[n])}</span>
               </button>
             ))}
           </div>
-          <p className="text-[10px] text-gray-400 mt-1.5">6 a 10 tambores: R$ 60,00 por tambor</p>
+          <p className="text-[10px] text-gray-400 mt-1.5">Acima de 5 tambores: consulte pelo WhatsApp</p>
         </div>
       </div>
 
@@ -856,6 +861,7 @@ function PricingSimulator() {
             { label: "Quantidade",   val: `${qtd} tambor${qtd > 1 ? "es" : ""} de 200L` },
             { label: "Capacidade",   val: `≈ ${carrinhos} carrinhos de mão` },
             { label: "Prazo",        val: "Até 5 dias corridos" },
+            { label: "Entrega",      val: entregaLabel },
             { label: "Tipo serviço", val: "Locação · sem mão de obra" },
           ].map((row) => (
             <div key={row.label} className="flex justify-between items-baseline gap-2">
@@ -867,8 +873,14 @@ function PricingSimulator() {
         <div className="h-px bg-white/10" />
         <div className="flex flex-col gap-1">
           <span className="text-xs text-white/50">Total estimado</span>
-          <span className="font-display text-5xl font-black text-brand-yellow leading-none">{fmt(total)}</span>
-          <span className="text-xs text-white/40 mt-1">Locação de até 5 dias · descarte incluído</span>
+          {total !== null ? (
+            <span className="font-display text-5xl font-black text-brand-yellow leading-none">{fmt(total)}</span>
+          ) : (
+            <span className="font-display text-3xl font-black text-brand-yellow leading-none">Sob consulta</span>
+          )}
+          <span className="text-xs text-white/40 mt-1">
+            {total !== null ? "Locação de até 5 dias · descarte incluído" : "Acima de 5 tambores — fale com a gente pelo WhatsApp"}
+          </span>
         </div>
         {/* Aviso sem mão de obra */}
         <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 flex items-start gap-2">
@@ -878,14 +890,26 @@ function PricingSimulator() {
             O cliente preenche o tambor. Não realizamos coleta manual do entulho.
           </p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="mt-auto w-full bg-brand-yellow text-brand-dark py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-yellow-400 active:scale-[0.98] transition-all shadow-lg shadow-brand-yellow/20"
-        >
-          <MessageCircle size={16} />
-          Fazer Pedido →
-        </button>
-        {showModal && (
+        {total !== null ? (
+          <button
+            onClick={() => setShowModal(true)}
+            className="mt-auto w-full bg-brand-yellow text-brand-dark py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-yellow-400 active:scale-[0.98] transition-all shadow-lg shadow-brand-yellow/20"
+          >
+            <MessageCircle size={16} />
+            Fazer Pedido →
+          </button>
+        ) : (
+          <a
+            href={consultaLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-auto w-full bg-brand-yellow text-brand-dark py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 hover:bg-yellow-400 active:scale-[0.98] transition-all shadow-lg shadow-brand-yellow/20"
+          >
+            <MessageCircle size={16} />
+            Consultar no WhatsApp →
+          </a>
+        )}
+        {showModal && total !== null && (
           <OrderModal
             order={{
               qtd,
