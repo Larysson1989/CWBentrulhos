@@ -44,7 +44,7 @@ function DefinirSenha({ onDone }: { onDone: () => void }) {
     <form onSubmit={salvar} className="min-h-screen flex flex-col gap-3 items-center justify-center bg-gray-50 p-4">
       <h1 className="font-black text-xl">Defina sua senha do painel</h1>
       <input name="senha" type="password" required minLength={8} autoComplete="new-password" placeholder="Nova senha (mín. 8)" className="border rounded-xl px-4 py-3 w-full max-w-xs" />
-      <button className="bg-brand-yellow font-black rounded-xl py-3 w-full max-w-xs">Salvar senha</button>
+      <button className="bg-brand-navy text-white font-black rounded-xl py-3 w-full max-w-xs">Salvar senha</button>
       {erro && <p className="text-red-600 text-sm">{erro}</p>}
     </form>
   );
@@ -65,7 +65,7 @@ function Login() {
       <h1 className="font-black text-xl">CWB Entulhos · Painel</h1>
       <input name="email" type="email" required placeholder="E-mail" className="border rounded-xl px-4 py-3 w-full max-w-xs" />
       <input name="senha" type="password" required placeholder="Senha" className="border rounded-xl px-4 py-3 w-full max-w-xs" />
-      <button className="bg-brand-yellow font-black rounded-xl py-3 w-full max-w-xs">Entrar</button>
+      <button className="bg-brand-navy text-white font-black rounded-xl py-3 w-full max-w-xs">Entrar</button>
       {erro && <p className="text-red-600 text-sm">{erro}</p>}
     </form>
   );

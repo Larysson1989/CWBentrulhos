@@ -55,7 +55,8 @@ function maskPhone(v: string) {
 // ── Calcula previsão mínima em horas úteis (seg–sex, 08h–17h) ────────────────
 function calcPrevisao(express: boolean): { data: Date; label: string; minDate: string } {
   const now = new Date();
-  const horasUteis = express ? 12 : 24;
+  // Regra: entrega a partir do dia útil seguinte (1 dia útil = 9h, das 08h às 17h).
+  const horasUteis = express ? 4 : 9;
   let restante = horasUteis;
   const cur = new Date(now);
 
@@ -126,6 +127,7 @@ export default function OrderModal({ order, onClose }: Props) {
   const [periodo, setPeriodo] = useState<"manha" | "tarde">("manha");
 
   const [osCode, setOsCode] = useState("");
+  const [etapa, setEtapa] = useState<1 | 2 | 3>(1);
 
   const inputCls =
     "w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-900 bg-white focus:outline-none focus:border-brand-yellow transition-colors";
@@ -159,20 +161,13 @@ export default function OrderModal({ order, onClose }: Props) {
     }
   }
 
-  function isFormValid() {
-    if (!nome.trim()) return false;
-    if (telefone.replace(/\D/g, "").length < 10) return false;
-    if (cep.replace(/\D/g, "").length !== 8) return false;
-    if (!addr.logradouro) return false;
-    if (!numero.trim()) return false;
-    if (!mesmoEnd) {
-      if (entCep.replace(/\D/g, "").length !== 8) return false;
-      if (!entAddr.logradouro) return false;
-      if (!entNumero.trim()) return false;
-    }
-    if (!dataEntrega || dataEntrega < previsao.minDate) return false;
-    return true;
-  }
+  const etapaOk = {
+    1: !!dataEntrega && dataEntrega >= previsao.minDate,
+    2: cep.replace(/\D/g, "").length === 8 && !!addr.logradouro && !!numero.trim() &&
+       (mesmoEnd || (entCep.replace(/\D/g, "").length === 8 && !!entAddr.logradouro && !!entNumero.trim())),
+    3: !!nome.trim() && telefone.replace(/\D/g, "").length >= 10,
+  };
+  const isFormValid = () => etapaOk[1] && etapaOk[2] && etapaOk[3];
 
   async function handleConfirm() {
     if (!isFormValid()) return;
@@ -309,7 +304,7 @@ export default function OrderModal({ order, onClose }: Props) {
           <div className="flex flex-col gap-3 w-full">
             <button
               onClick={handlePrint}
-              className="w-full bg-brand-yellow text-brand-dark py-3 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-yellow-400 transition-all"
+              className="w-full bg-brand-yellow text-brand-dark py-3 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-brand-yellow-600 transition-all"
             >
               📄 Baixar / Imprimir OS
             </button>
@@ -328,8 +323,16 @@ export default function OrderModal({ order, onClose }: Props) {
 
           <div className="sticky top-0 bg-white border-b border-gray-100 px-8 py-5 flex items-center justify-between z-10">
             <div>
-              <h2 className="font-display text-xl font-black text-brand-dark">Fazer Pedido</h2>
-              <p className="text-xs text-gray-400 mt-0.5">Preencha os dados para finalizar sua locação</p>
+              <h2 className="font-display text-xl font-black text-brand-dark">Fazer pedido</h2>
+              <ol className="flex items-center gap-2 mt-2 text-xs font-semibold" aria-label="Etapas">
+                {["Data", "Endereço", "Seus dados"].map((t, i) => (
+                  <li key={t} aria-current={etapa === i + 1 ? "step" : undefined}
+                    className={`flex items-center gap-1.5 ${etapa === i + 1 ? "text-brand-navy" : etapa > i + 1 ? "text-gray-500" : "text-gray-300"}`}>
+                    <span className={`w-5 h-5 rounded-full grid place-items-center text-[11px] ${etapa >= i + 1 ? "bg-brand-navy text-white" : "bg-gray-100 text-gray-400"}`}>{i + 1}</span>
+                    {t}{i < 2 && <span className="text-gray-300 ml-1">—</span>}
+                  </li>
+                ))}
+              </ol>
             </div>
             <button onClick={onClose} className="text-gray-400 hover:text-brand-dark transition-colors p-2" aria-label="Fechar">
               <X className="w-5 h-5" />
@@ -339,9 +342,9 @@ export default function OrderModal({ order, onClose }: Props) {
           <div className="px-8 py-6 flex flex-col gap-8">
 
             {/* DADOS PESSOAIS */}
-            <section>
+            {etapa === 3 && <section>
               <div className="flex items-center gap-2 mb-4">
-                <User className="w-4 h-4 text-brand-yellow" />
+                <User className="w-4 h-4 text-brand-navy" />
                 <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500">Dados pessoais</h3>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -372,12 +375,13 @@ export default function OrderModal({ order, onClose }: Props) {
                   />
                 </div>
               </div>
-            </section>
+            </section>}
 
             {/* ENDEREÇO DE COBRANÇA */}
+            {etapa === 2 && <>
             <section>
               <div className="flex items-center gap-2 mb-4">
-                <MapPin className="w-4 h-4 text-brand-yellow" />
+                <MapPin className="w-4 h-4 text-brand-navy" />
                 <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500">Endereço de cobrança</h3>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -430,7 +434,7 @@ export default function OrderModal({ order, onClose }: Props) {
             {/* LOCAL DE ENTREGA */}
             <section>
               <div className="flex items-center gap-2 mb-4">
-                <Package className="w-4 h-4 text-brand-yellow" />
+                <Package className="w-4 h-4 text-brand-navy" />
                 <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500">Local de entrega</h3>
               </div>
               <div
@@ -494,19 +498,22 @@ export default function OrderModal({ order, onClose }: Props) {
               )}
             </section>
 
+            </>}
+
             {/* AGENDAMENTO */}
+            {etapa === 1 &&
             <section>
               <div className="flex items-center gap-2 mb-4">
-                <Calendar className="w-4 h-4 text-brand-yellow" />
+                <Calendar className="w-4 h-4 text-brand-navy" />
                 <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500">Agendamento de entrega</h3>
               </div>
 
               <div className="bg-amber-50 border border-brand-yellow/40 rounded-xl px-4 py-3 mb-4">
                 <div className="flex items-start gap-3">
-                  <Clock className="w-4 h-4 text-brand-yellow flex-shrink-0 mt-0.5" />
+                  <Clock className="w-4 h-4 text-brand-navy flex-shrink-0 mt-0.5" />
                   <div className="flex-1">
                     <p className="text-xs font-bold text-brand-dark uppercase tracking-wider mb-0.5">
-                      Prazo mínimo — {order.express ? "Express (12h úteis)" : "Convencional (24h úteis)"}
+                      Prazo mínimo — {order.express ? "Express" : "próximo dia útil"}
                     </p>
                     <p className="text-sm font-black text-brand-dark">{previsao.label}</p>
                     <p className="text-[11px] text-gray-400 mt-1">
@@ -569,10 +576,13 @@ export default function OrderModal({ order, onClose }: Props) {
               </div>
             </section>
 
+            }
+
             {/* OBSERVAÇÕES */}
+            {etapa === 3 && <>
             <section>
               <div className="flex items-center gap-2 mb-4">
-                <FileText className="w-4 h-4 text-brand-yellow" />
+                <FileText className="w-4 h-4 text-brand-navy" />
                 <h3 className="font-bold text-sm uppercase tracking-wider text-gray-500">Observações</h3>
               </div>
               <textarea
@@ -612,15 +622,28 @@ export default function OrderModal({ order, onClose }: Props) {
                 </div>
               </div>
             </section>
+            </>}
 
-            <button
-              onClick={handleConfirm}
-              disabled={!isFormValid()}
-              className="w-full bg-brand-yellow text-brand-dark py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2 hover:bg-yellow-400 active:scale-[0.98] transition-all shadow-lg shadow-brand-yellow/20 disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              <MessageCircle size={18} />
-              Confirmar Pedido
-            </button>
+            <div className="flex gap-3">
+              {etapa > 1 && (
+                <button type="button" onClick={() => setEtapa((e) => (e - 1) as 1 | 2)}
+                  className="px-6 py-4 rounded-xl border-2 border-gray-200 font-bold text-brand-dark hover:border-brand-navy transition-colors">
+                  Voltar
+                </button>
+              )}
+              {etapa < 3 ? (
+                <button type="button" onClick={() => setEtapa((e) => (e + 1) as 2 | 3)} disabled={!etapaOk[etapa]}
+                  className="flex-1 bg-brand-navy hover:bg-brand-dark text-white py-4 rounded-xl font-display font-extrabold text-base transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                  Continuar
+                </button>
+              ) : (
+                <button onClick={handleConfirm} disabled={!isFormValid()}
+                  className="flex-1 bg-brand-yellow hover:bg-brand-yellow-600 text-brand-dark py-4 rounded-xl font-display font-extrabold text-base flex items-center justify-center gap-2 transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
+                  <MessageCircle size={18} />
+                  Confirmar pedido
+                </button>
+              )}
+            </div>
 
           </div>
         </div>
