@@ -5,7 +5,8 @@ import './index.css';
 
 // Painel em /#admin (hash funciona em qualquer hospedagem estática, sem rewrite).
 const Admin = lazy(() => import('./Admin.tsx'));
-const isAdmin = location.hash === '#admin';
+// Links de convite/recuperação do Supabase voltam com #access_token=...&type=invite|recovery.
+const isAdmin = location.hash === '#admin' || /type=(invite|recovery)/.test(location.hash);
 addEventListener('hashchange', () => { if ((location.hash === '#admin') !== isAdmin) location.reload(); });
 
 createRoot(document.getElementById('root')!).render(

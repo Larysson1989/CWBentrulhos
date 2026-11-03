@@ -18,6 +18,8 @@ const dataBR = (d: string) => new Date(d.length === 10 ? d + "T12:00:00" : d).to
 export default function Admin() {
   const [session, setSession] = useState<Session | null>(null);
   const [ready, setReady] = useState(false);
+  // Lido antes do supabase-js limpar o hash.
+  const [definirSenha, setDefinirSenha] = useState(() => /type=(invite|recovery)/.test(location.hash));
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => { setSession(data.session); setReady(true); });
@@ -26,7 +28,26 @@ export default function Admin() {
   }, []);
 
   if (!ready) return null;
+  if (session && definirSenha) return <DefinirSenha onDone={() => { setDefinirSenha(false); history.replaceState(null, "", "#admin"); }} />;
   return session ? <Painel /> : <Login />;
+}
+
+function DefinirSenha({ onDone }: { onDone: () => void }) {
+  const [erro, setErro] = useState("");
+  async function salvar(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const senha = String(new FormData(e.currentTarget).get("senha"));
+    const { error } = await supabase.auth.updateUser({ password: senha });
+    if (error) setErro(error.message); else onDone();
+  }
+  return (
+    <form onSubmit={salvar} className="min-h-screen flex flex-col gap-3 items-center justify-center bg-gray-50 p-4">
+      <h1 className="font-black text-xl">Defina sua senha do painel</h1>
+      <input name="senha" type="password" required minLength={8} autoComplete="new-password" placeholder="Nova senha (mín. 8)" className="border rounded-xl px-4 py-3 w-full max-w-xs" />
+      <button className="bg-brand-yellow font-black rounded-xl py-3 w-full max-w-xs">Salvar senha</button>
+      {erro && <p className="text-red-600 text-sm">{erro}</p>}
+    </form>
+  );
 }
 
 function Login() {
