@@ -206,8 +206,27 @@ export default function OrderModal({ order, onClose }: Props) {
       descricao.trim() ? `\n📝 *Observações:* ${descricao.trim()}` : "",
     ].filter(Boolean).join("\n");
 
-    await new Promise((r) => setTimeout(r, 2000));
-    window.open(`https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
+    // Abre a aba já no clique (senão o bloqueador de pop-up barra depois do await).
+    const waWin = window.open("", "_blank");
+    const endCobranca = `${addr.logradouro}, ${numero} — ${addr.bairro}, ${addr.cidade}/${addr.uf}`;
+    try {
+      const { supabase } = await import("./supabase");
+      const utm = new URLSearchParams(location.search).get("utm_source");
+      const { error } = await supabase.from("pedidos").insert({
+        os, nome: nome.trim(), telefone, cep,
+        endereco: endCobranca,
+        endereco_entrega: mesmoEnd ? null : `${entEndStr} — CEP ${entCep}`,
+        qtd: order.qtd, data_entrega: dataEntrega, periodo,
+        observacoes: descricao.trim() || null,
+        origem: (utm ?? document.referrer) || null,
+      });
+      if (error) throw error;
+    } catch (e) {
+      // Falha no banco não pode perder o pedido: o WhatsApp abaixo ainda leva tudo.
+      console.error("Falha ao salvar pedido", e);
+    }
+    const waUrl = `https://wa.me/${OWNER_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+    if (waWin) waWin.location.href = waUrl; else window.open(waUrl, "_blank");
     setStep("done");
   }
 
